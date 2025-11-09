@@ -1,0 +1,19 @@
+Atributua               Atributua instantzia sortzeko funtzioa
+Atributua-class         Atributua klasea
+DatuMultzoa             DatuMultzoa instantzia sortzeko funtzioa
+DatuMultzoa-class       DatuMultzoa S4 klasearen definizioa
+Korrelazioak_irudikatu
+                        Korrelazioen irudikapena
+Visualizar_ROC          ROC kurbaren irudikapena (AUC plot)
+discretize              Diskretizazioa puntu ebakiekin
+discretizeEF            Equal Frequency diskretizazioa
+discretizeEW            Equal Width diskretizazioa
+entropy                 Entropiaren kalkulua atributu kategorikoentzat
+filter_metrics          Atributuen filtraketa metriketan oinarrituta
+korrelazio_matrizea     Korrelazioak edo informazio mutua aldagai
+                        guztien artean
+normalize               Datuen normalizazioa eta estandarizazioa
+roc_analisi             AUC kalkulua atributu jarraituentzat
+show,DatuMultzoa-method
+                        DatuMultzoa objektua erakusteko metodoa
+var_col                 Atributu zenbakizkoen bariantza kalkulua

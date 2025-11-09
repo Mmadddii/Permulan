@@ -1,0 +1,25 @@
+Package: Permulan
+Type: Package
+Title: Datuen aurreprozesamendurako eta azterketa estatistikorako
+        tresna multzoa (S4 egiturak erabiliz)
+Version: 0.1.0
+Authors@R: c(
+    person(
+      given = "Maddi",
+      family = "Olaetxea",
+      email = "maddiolausa@gmail.com",
+      role = c("aut", "cre")
+    )
+  )
+Description: Pakete honek datuen aurreprozesamendurako eta azterketa estatistikorako tresna multzoa eskaintzen du,
+    S4 klaseen bidez egituratuta. Hezkuntza helburuetarako erabilera sustatzen du eta adibide praktikoak eskaintzen ditu.
+License: MIT + file LICENSE
+Encoding: UTF-8
+RoxygenNote: 7.3.3
+Imports: ggplot2, reshape2, scales, methods
+Suggests: knitr, rmarkdown
+VignetteBuilder: knitr
+NeedsCompilation: no
+Packaged: 2025-11-09 18:28:32 UTC; maddi
+Author: Maddi Olaetxea [aut, cre]
+Maintainer: Maddi Olaetxea <maddiolausa@gmail.com>

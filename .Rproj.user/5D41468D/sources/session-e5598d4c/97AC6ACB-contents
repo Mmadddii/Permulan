@@ -1,0 +1,5 @@
+discretizeEW(c(1,2,3,4,5), 2)
+entropy(factor(c("A","B","A","C")))
+filter_metrics(df_ejemplo, var_min=1)
+library(Permulan)
+ls("package:Permulan")

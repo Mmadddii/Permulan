@@ -1,0 +1,453 @@
+## ---- echo=FALSE-------------------------------------------------------------------------------------------------
+
+
+## ---- eval=FALSE-------------------------------------------------------------------------------------------------
+## if ("condicion") {
+##   #Codigo a ejecutar
+## }
+
+
+## ----------------------------------------------------------------------------------------------------------------
+numero <- 6
+if (numero %% 2 == 0) {
+  message("El número " , numero, " es par")
+}
+
+numero <- 3
+if (numero %% 2 == 0) {
+  message("El número " , numero, " es par")
+}
+
+
+## ----------------------------------------------------------------------------------------------------------------
+numero <- 7
+if (numero %% 2 == 0) {
+  message("El número " , numero, " es par")
+} else {
+  message("El número " , numero, " es impar")
+}
+
+
+## ----------------------------------------------------------------------------------------------------------------
+numero <- 0
+if (numero<0) {
+  message("El número " , numero, " es negativo")
+} else if(numero==0){
+  message("El número " , numero, " es cero")
+} else if (numero %% 2 == 0){
+  message("El número " , numero, " es par")
+}else{
+  message("El número " , numero, " es impar")
+}
+
+
+## ----------------------------------------------------------------------------------------------------------------
+idioma <- "EU"
+switch (idioma, 
+        EU={
+          message("Mezu bat")
+        },
+        ES={
+          message("Un mensaje")
+        },
+        EN={
+          message("A message")
+        },
+        {
+          message("El idioma no está definido / Hizkuntza ez dago definituta / The language is not defined")
+        })
+
+
+## ----------------------------------------------------------------------------------------------------------------
+tryCatch({
+  2 + 7
+}, error=function(e){
+  message("Se ha producido un error!!")
+  print(e)
+}, finally={
+  message("Este código se ejecuta siempre, haya o no error")
+})
+
+tryCatch({
+  2 + "A"
+}, error=function(e){
+  message("Se ha producido un error!!")
+  print(e)
+}, finally={
+  message("Este código se ejecuta siempre, haya o no error")
+})
+
+
+## ----------------------------------------------------------------------------------------------------------------
+for(i in 1:5) {
+  print(i^2)
+}
+
+
+## ----------------------------------------------------------------------------------------------------------------
+letras <- c("A","B","C","D")
+for (i in 1:length(letras)){
+  print(letras[i])
+}
+
+for (letra in letras) {
+  print(letra)
+}
+
+
+## ----------------------------------------------------------------------------------------------------------------
+numero.aleatorio <- round(runif(1)*100)
+multiplo <- 7
+while(numero.aleatorio %% multiplo !=0) {
+  message("El número ", numero.aleatorio, " no es múltiplo de ", multiplo)
+  numero.aleatorio <- round(runif(1)*100)
+}
+message("El número ", numero.aleatorio, " SI es múltiplo de ", multiplo)
+
+
+## ----------------------------------------------------------------------------------------------------------------
+textos <- c("Nombre 1", "Nombre 2", "Nombre 3", "Nombre 4")
+tolower(textos)
+
+
+## ----------------------------------------------------------------------------------------------------------------
+integra <- function(x, y){
+  integral <- 0
+  for (i in 2:length(x)) {
+    delta.x <- x[i] - x[i-1]
+    delta.y <- y[i] - y[i-1]
+    # Area de la zona rectangular
+    integral <- integral + delta.x * min(y[i], y[i-1]) 
+    #area del triangulo superior
+    integral <- integral + delta.x * abs(delta.y) / 2
+  }
+  return(integral)
+}
+
+
+## ----------------------------------------------------------------------------------------------------------------
+integraOptimizada <- function(x, y) {
+  delta.x <- diff(x)
+  mean.y  <- rowMeans(cbind(y[-1], y[-length(y)])) 
+  return(sum(delta.x * mean.y))
+}
+
+
+## ----------------------------------------------------------------------------------------------------------------
+numero.de.puntos <- 10000
+x <- seq(0,1, length.out=numero.de.puntos)
+y <- dbeta(x, 2, 5)
+
+system.time(integra(x, y))
+system.time(integraOptimizada(x, y))
+
+numero.de.puntos <- 10000000
+x <- seq(0,1, length.out=numero.de.puntos)
+y <- dbeta(x, 2, 5)
+
+system.time(integra(x, y))
+system.time(integraOptimizada(x, y))
+
+
+## ----------------------------------------------------------------------------------------------------------------
+integraParcial <- function(i) {
+  delta.x <- x[i] - x[i-1]
+    delta.y <- y[i] - y[i-1]
+    integral <- delta.x * min(y[i], y[i-1]) + 
+      delta.x * abs(delta.y) / 2
+    return(integral)
+}
+
+
+## ----------------------------------------------------------------------------------------------------------------
+numero.de.puntos <- 1000
+x <- seq(0,1, length.out=numero.de.puntos)
+y <- dbeta(x, 2, 5)
+resultados.parciales <- sapply(2:length(x), FUN=integraParcial)
+head(resultados.parciales)
+sum(resultados.parciales)
+
+
+## ----------------------------------------------------------------------------------------------------------------
+integraParcial <- function(i, x, y) {
+  delta.x <- x[i] - x[i-1]
+    delta.y <- y[i] - y[i-1]
+    integral <- delta.x * min(y[i], y[i-1]) + 
+      delta.x * abs(delta.y) / 2
+    return(integral)
+}
+
+numero.de.puntos <- 1000
+vector.x <- seq(0, 0.5, length.out=numero.de.puntos)
+vector.y <- dbeta(vector.x, 2, 5)
+
+resultados.parciales <- sapply(2:length(vector.x), FUN=integraParcial, x=vector.x, y=vector.y)
+head(resultados.parciales)
+sum(resultados.parciales)
+
+
+## ----------------------------------------------------------------------------------------------------------------
+angulos <- seq(0, 2*pi, length.out=50)
+resultados <- lapply(angulos, 
+                     FUN=function(a) {
+                       fila <- data.frame("Angulo"=a, "Coseno"=cos(a), "Seno"=sin(a), "Tangente"=tan(a))
+                       return(fila)
+                     })
+resultados[1]
+
+
+## ----------------------------------------------------------------------------------------------------------------
+df <- do.call(rbind, resultados)
+head(df)
+
+
+## ----------------------------------------------------------------------------------------------------------------
+mediana.filas <- apply(df, MARGIN=1, FUN=median)
+head(mediana.filas)
+mediana.columnas <- apply(df, MARGIN=2, FUN=median)
+mediana.columnas
+
+
+## ----------------------------------------------------------------------------------------------------------------
+scores <- rbind(c(2,5,3.1,5.2),
+                 c(4,1.3,2.2,1.4),
+                 c(1,2.2,3.1,5.2),
+                 c(3,2,4.9,4))
+colnames(scores) <- c("Player 1", "Player 2", 
+                       "Player 3", "Player 4")
+
+getPermutations <- function(scores){
+   aux <- apply(scores, MARGIN=1, 
+                FUN=rank, ties.method="random")
+   return(t(aux))
+}
+getPermutations(scores)
+
+
+## ----------------------------------------------------------------------------------------------------------------
+getFirstOrderMarginals <- function (permu.set, smoothed=FALSE) {
+  size <- ncol(permu.set)
+  if (!smoothed) {
+    getMarginal <- function (vector)
+    {
+      aux <- sapply(1:size, FUN=function(i) {return(sum(vector==i))})
+      return (aux / sum(aux))
+    }
+  } else {
+    getMarginal <- function (vector)
+    {
+      aux <- sapply(1:size, FUN=function(i) {return(sum(vector==i))})
+      return ((aux + 1) / (sum(aux) + size))
+    }
+  }
+  
+  return(apply(permu.set, MARGIN=2, FUN=getMarginal))
+}
+
+getFirstOrderMarginals(getPermutations(scores))
+getFirstOrderMarginals(getPermutations(scores), smoothed=TRUE)
+
+
+## ----------------------------------------------------------------------------------------------------------------
+insertIn <- function (position, vector, element) {
+  if (position==0) {
+    vector.new <- c(element, vector)
+  } else if (position==length(vector)) {
+    vector.new <- c(vector, element)
+  } else {
+    vector.new <- c(vector[1:position], element, vector[(position+1):length(vector)])
+  }
+  return(vector.new)
+}
+
+
+## ----------------------------------------------------------------------------------------------------------------
+
+expandPermutation <- function(permu) {
+  aux <- lapply(0:length(permu), FUN=insertIn, vector=permu, element=length(permu)+1)
+  return(do.call(rbind,aux))
+} 
+
+
+## ----------------------------------------------------------------------------------------------------------------
+getAllPermutations <- function (size) {
+  if (size > 10) {
+    stop ("We cannot generate all the premutations for size ", 
+          size, ", there are ", factorial(size), " combinations!!")
+  }
+  
+  if (size == 1)
+  {
+    permus <- matrix(1, ncol=1)
+  } else {
+    aux <- getAllPermutations(size-1)
+    aux2 <- lapply(1:nrow(aux),
+                   FUN=function(i){
+                     return(expandPermutation(aux[i,]))
+                   })
+    permus <- do.call(rbind, aux2)
+  }
+  return(permus)
+}
+getAllPermutations(3)
+getAllPermutations(5)
+
+
+#---- eval=FALSE, echo=FALSE-------------------------------------------------------------------------------------
+#R4.1
+setGeneric("var_col", function(x) standardGeneric("var_col"))
+
+setMethod("var_col", "data.frame", function(x) {
+  apply(x, MARGIN = 2, FUN = var)
+})
+
+setMethod("var_col", "DatuMultzoa", function(x) {
+  # Kalkulatu atributu numerikoen variantza
+  num_atrib <- Filter(function(a) a@mota == "numeric", x@atributuak)
+  df <- as.data.frame(lapply(num_atrib, function(a) a@balioak))
+  apply(df, MARGIN = 2, FUN = var)
+})
+setMethod("var_col", "Atributua", function(x) {
+  # Bakarrik zenbakizko atributuekin
+  if (x@mota != "numeric") stop("Atributua ez da zenbakizkoa (numeric izan behar du)")
+  var(x@balioak)
+})
+
+
+#R4.2
+setGeneric("entropy_by_column", function(x) standardGeneric("entropy_by_column"))
+
+setMethod("entropy_by_column", "data.frame", function(x) {
+  if (!all(sapply(x, is.factor))) stop("All columns must be factors")
+  sapply(x, entropy)
+})
+
+setMethod("entropy_by_column", "DatuMultzoa", function(x) {
+  # Atributu kategorikoak aukeratu
+  cat_atrib <- Filter(function(a) a@mota == "categoric", x@atributuak)
+  sapply(cat_atrib, function(a) entropy(a@balioak))
+})
+
+
+#R4.3
+setGeneric("clasificacion", function(df) standardGeneric("clasificacion"))
+
+setMethod("clasificacion", "data.frame", function(df) {
+  if (!is.numeric(df[,1])) stop("The first column must be numeric")
+  if (!is.logical(df[,2])) stop("The second column must be logical")
+  # Lehen zutabearen arabera ordenatu
+  
+  df_sorted <- df[order(df[,1]), ]
+  TPR <- c()
+  FPR <- c()
+  #pred zutabe tenporala sortu mozte balio bakoitzaren T/F kalkulatu eta bertatik TPR eta FPR kalkulatu
+  
+  for (i in 1:(nrow(df_sorted))){
+    df_sorted$pred <- df_sorted[,1] >= df_sorted[i,1]
+    TP <- sum(df_sorted$pred & df_sorted[,2])
+    TN <- sum(!df_sorted$pred & !df_sorted[,2])
+    FP <- sum(df_sorted$pred & !df_sorted[,2])
+    FN <- sum(!df_sorted$pred & df_sorted[,2])
+    number <- as.character(df_sorted[i,1])
+    TPR[number] <- TP/(TP+FN)
+    FPR[number] <- FP/(FP+TN)
+  }
+  
+  AUC <- 0
+  for (i in 2:length(FPR)) {
+    AUC <- AUC + (FPR[i] - FPR[i-1]) * (TPR[i] + TPR[i-1]) / 2
+  }
+  AUC <- abs(AUC)
+  names(AUC) <- NULL
+  plot(FPR, TPR, type="l", main = "ROC Kurba", col = "blue", lwd = 2) 
+  return(list(curva=data.frame(cutoff = as.numeric(names(FPR)), FPR, TPR), AUC=AUC))
+})
+
+setMethod("clasificacion", "DatuMultzoa", function(df) {
+  # Lehen zenbakizko atributua eta bigarren logikoa erabiltzeiala asumitu
+  num_atrib <- Filter(function(a) a@mota == "numeric", df@atributuak)
+  log_atrib <- Filter(function(a) a@mota == "categoric", df@atributuak)  
+  
+  if (length(num_atrib) < 1) stop("Ez dago zenbakizko atributurik")
+  if (length(log_atrib) < 1) stop("Ez dago atributu logiko/categorilorik etiketarako")
+  
+  tmp_df <- data.frame(num = num_atrib[[1]]@balioak, 
+                       label = as.logical(log_atrib[[1]]@balioak))
+  clasificacion(tmp_df)
+})
+
+
+visualizar_ROC <- function(resultado) {
+  if (!("curva" %in% names(resultado)) || !("AUC" %in% names(resultado))) {
+    stop("El objeto de entrada no tiene el formato correcto. Debe provenir de 'clasificacion()'.")
+  }
+  
+  curva <- resultado$curva
+  AUC <- resultado$AUC
+  
+  plot(curva$FPR, curva$TPR, type = "l", col = "blue", lwd = 2,
+       main = paste("ROC Kurba (AUC =", round(AUC, 3), ")"),
+       xlab = "Positibo Faltxuen Tasa (FPR)",
+       ylab = "Gezurrezko Positiboen Tasa (TPR)")
+  abline(0, 1, col = "red", lty = 2)
+}
+visualizar_ROC(r) 
+# ---- erabileraaaa!!! ----
+
+# Data.frame de ejemplo
+df <- data.frame(
+  edad = c(21, 35, 50, 28, 44, 60),
+  ingreso = c(1500, 2300, 1800, 2900, 3100, 4000),
+  ciudad = as.factor(c("A", "B", "A", "C", "B", "C")),
+  stringsAsFactors = FALSE
+)
+
+# Crear objeto DatuMultzoa
+dm <- DatuMultzoa(df)
+
+# Con data.frame
+var_col(df)
+# Con DatuMultzoa
+var_col(dm)
+# Con un solo Atributua numérico
+var_col(dm@atributuak$edad)
+
+
+# Con data.frame
+entropy_by_column(df["ciudad", drop=FALSE])
+# Con DatuMultzoa
+entropy_by_column(dm)
+# Con un solo Atributua categórico
+entropy(dm@atributuak$ciudad@balioak)
+
+# Con data.frame
+discretized_dataframe(df, num.bins = 3)
+# Con DatuMultzoa
+discretized_dataframe(dm, num.bins = 3)
+# Con un solo Atributua numérico
+discretizeEW(dm@atributuak$edad, 3)
+discretizeEF(dm@atributuak$ingreso, 3)
+
+
+# Con data.frame
+normalizaryestandarizar(df[,1:2]) # solo columnas numéricas
+# Con DatuMultzoa
+normalizaryestandarizar(dm)
+
+
+# Datos de ejemplo curva ROC y AUC
+df_test <- data.frame(
+  variable = c(0.1, 0.4, 0.35, 0.8, 0.9, 0.2, 0.6, 0.5, 0.7, 0.3),
+  etiqueta  = c(FALSE, FALSE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, TRUE, FALSE)
+)
+
+# Curva ROC
+res <- clasificacion(df_test)
+visualizar_ROC(res)
+
+df_tmp <- as.data.frame(list(
+  variable = dm@atributuak$edad@balioak,
+  etiqueta = dm@atributuak$ciudad@balioak == "A"  # ejemplo lógico
+))
+res_dm <- clasificacion(df_tmp)
+visualizar_ROC(res_dm)

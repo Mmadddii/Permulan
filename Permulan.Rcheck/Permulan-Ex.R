@@ -1,0 +1,330 @@
+pkgname <- "Permulan"
+source(file.path(R.home("share"), "R", "examples-header.R"))
+options(warn = 1)
+options(pager = "console")
+library('Permulan')
+
+base::assign(".oldSearch", base::search(), pos = 'CheckExEnv')
+base::assign(".old_wd", base::getwd(), pos = 'CheckExEnv')
+cleanEx()
+nameEx("Atributua-class")
+### * Atributua-class
+
+flush(stderr()); flush(stdout())
+
+### Name: Atributua-class
+### Title: Atributua klasea
+### Aliases: Atributua-class
+
+### ** Examples
+
+a <- Atributua("adina", c(20, 30, 40, 50, 60, 70, 80))
+a
+
+
+
+
+cleanEx()
+nameEx("Atributua")
+### * Atributua
+
+flush(stderr()); flush(stdout())
+
+### Name: Atributua
+### Title: Atributua instantzia sortzeko funtzioa
+### Aliases: Atributua
+
+### ** Examples
+
+Atributua("adina", c(10, 20, 30))
+
+
+
+cleanEx()
+nameEx("DatuMultzoa")
+### * DatuMultzoa
+
+flush(stderr()); flush(stdout())
+
+### Name: DatuMultzoa
+### Title: DatuMultzoa instantzia sortzeko funtzioa
+### Aliases: DatuMultzoa
+
+### ** Examples
+
+datuak <- data.frame(adina = c(23, 45, 34), sexua = c("M", "F", "M"))
+DatuMultzoa(datuak, klase_izena = "sexua")
+
+
+
+cleanEx()
+nameEx("Korrelazioak_irudikatu")
+### * Korrelazioak_irudikatu
+
+flush(stderr()); flush(stdout())
+
+### Name: Korrelazioak_irudikatu
+### Title: Korrelazioen irudikapena
+### Aliases: Korrelazioak_irudikatu
+
+### ** Examples
+
+df <- data.frame(
+  adina = c(20, 25, 30, 35, 40, 45, 50),
+  soldata = c(5000, 4000, 3000, 2000, 1000, 800, 600),
+  altuera = c(1.60, 1.65, 1.70, 1.75, 1.78, 1.82, 1.85)
+)
+Korrelazioak_irudikatu(df)
+
+
+
+
+cleanEx()
+nameEx("Visualizar_ROC")
+### * Visualizar_ROC
+
+flush(stderr()); flush(stdout())
+
+### Name: Visualizar_ROC
+### Title: ROC kurbaren irudikapena (AUC plot)
+### Aliases: Visualizar_ROC
+
+### ** Examples
+
+df <- data.frame(
+  adina = c(20, 25, 30, 35, 40, 45, 50),
+  soldata = c(5000, 4000, 3000, 2000, 1000, 800, 600),
+  altuera = c(1.60, 1.65, 1.70, 1.75, 1.78, 1.82, 1.85)
+)
+Korrelazioak_irudikatu(df)
+
+
+
+
+cleanEx()
+nameEx("discretize")
+### * discretize
+
+flush(stderr()); flush(stdout())
+
+### Name: discretize
+### Title: Diskretizazioa puntu ebakiekin
+### Aliases: discretize discretize,numeric-method
+###   discretize,Atributua-method discretize,DatuMultzoa-method
+
+### ** Examples
+
+balioak <- c(20, 30, 40, 50)
+discretize(balioak, c(25, 35, 45))
+
+
+
+
+cleanEx()
+nameEx("discretizeEF")
+### * discretizeEF
+
+flush(stderr()); flush(stdout())
+
+### Name: discretizeEF
+### Title: Equal Frequency diskretizazioa
+### Aliases: discretizeEF discretizeEF,numeric-method
+###   discretizeEF,Atributua-method
+
+### ** Examples
+
+x <- c(10, 20, 25, 30, 40, 50, 60, 70)
+discretizeEF(x, num.bins = 3)
+
+
+
+
+cleanEx()
+nameEx("discretizeEW")
+### * discretizeEW
+
+flush(stderr()); flush(stdout())
+
+### Name: discretizeEW
+### Title: Equal Width diskretizazioa
+### Aliases: discretizeEW discretizeEW,numeric-method
+###   discretizeEW,Atributua-method
+
+### ** Examples
+
+# --- Adibidea 1: numeric bektore batekin ---
+x <- c(10, 20, 25, 30, 40, 50, 60, 70)
+emaitza <- discretizeEW(x, num.bins = 3)
+emaitza$x.discretized
+emaitza$cut.points
+
+# --- Adibidea 2: Atributua klasearekin ---
+a <- Atributua("adina", c(20, 30, 40, 50, 60, 70, 80))
+a_disk <- discretizeEW(a, num.bins = 3)
+a_disk$atributua@balioak
+a_disk$cut.points
+
+
+
+
+cleanEx()
+nameEx("entropy")
+### * entropy
+
+flush(stderr()); flush(stdout())
+
+### Name: entropy
+### Title: Entropiaren kalkulua atributu kategorikoentzat
+### Aliases: entropy entropy_by_column entropy,factor-method
+###   entropy,Atributua-method entropy_by_column,data.frame-method
+###   entropy_by_column,DatuMultzoa-method
+
+### ** Examples
+
+fakt <- factor(c("A", "A", "B", "B", "C", "A"))
+entropy(fakt)
+df <- data.frame(kol1 = factor(c("A", "A", "B", "C")),
+                 kol2 = factor(c("X", "X", "X", "Y")))
+entropy_by_column(df)
+dm <- DatuMultzoa(df)
+entropy_by_column(dm)
+
+
+
+
+cleanEx()
+nameEx("filter_metrics")
+### * filter_metrics
+
+flush(stderr()); flush(stdout())
+
+### Name: filter_metrics
+### Title: Atributuen filtraketa metriketan oinarrituta
+### Aliases: filter_metrics filter_metrics,data.frame-method
+###   filter_metrics,DatuMultzoa-method
+
+### ** Examples
+
+df <- data.frame(
+  x1 = c(1,2,3,4,5),
+  x2 = c(5,5,5,5,5),
+  cat = factor(c("A","B","A","B","C")),
+  label = c(TRUE, FALSE, TRUE, FALSE, TRUE)
+)
+
+# Data.frame baten adibidea
+filter_metrics(df, var_min = 1, entropy_min = 0.5)
+
+# DatuMultzoa objektu baten adibidea
+dm <- DatuMultzoa(df, klase_izena = "label")
+filter_metrics(dm, var_min = 1, entropy_min = 0.5)
+
+
+
+
+cleanEx()
+nameEx("korrelazio_matrizea")
+### * korrelazio_matrizea
+
+flush(stderr()); flush(stdout())
+
+### Name: korrelazio_matrizea
+### Title: Korrelazioak edo informazio mutua aldagai guztien artean
+### Aliases: korrelazio_matrizea korrelazio_matrizea,data.frame-method
+###   korrelazio_matrizea,DatuMultzoa-method
+
+### ** Examples
+
+df <- data.frame(
+  adina = c(20, 25, 30, 35, 40),
+  soldata = c(1000, 1200, 1500, 1800, 2000),
+  sexua = factor(c("M", "F", "M", "M", "F")),
+  hiria = factor(c("A", "B", "A", "C", "B"))
+)
+
+korrelazio_matrizea(df)
+
+
+
+
+cleanEx()
+nameEx("normalize")
+### * normalize
+
+flush(stderr()); flush(stdout())
+
+### Name: normalize
+### Title: Datuen normalizazioa eta estandarizazioa
+### Aliases: normalize standardize normalize,numeric-method
+###   standardize,numeric-method normalize,Atributua-method
+###   standardize,Atributua-method normalize,DatuMultzoa-method
+###   standardize,DatuMultzoa-method normalize,data.frame-method
+###   standardize,data.frame-method
+
+### ** Examples
+
+x <- c(10, 20, 30)
+normalize(x)
+standardize(x)
+
+df <- data.frame(a = 1:5, b = 6:10)
+normalize(df)
+standardize(df)
+
+
+
+
+cleanEx()
+nameEx("roc_analisi")
+### * roc_analisi
+
+flush(stderr()); flush(stdout())
+
+### Name: roc_analisi
+### Title: AUC kalkulua atributu jarraituentzat
+### Aliases: roc_analisi roc_analisi,data.frame-method
+###   roc_analisi,DatuMultzoa-method
+
+### ** Examples
+
+df_test <- data.frame(
+  aldagaia = c(0.1, 0.4, 0.35, 0.8, 0.9, 0.2, 0.6, 0.5, 0.7, 0.3),
+  etiketa  = c(FALSE, FALSE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, TRUE, FALSE)
+)
+emaitza <- roc_analisi(df_test)
+print(emaitza$AUC)
+
+
+
+
+cleanEx()
+nameEx("var_col")
+### * var_col
+
+flush(stderr()); flush(stdout())
+
+### Name: var_col
+### Title: Atributu zenbakizkoen bariantza kalkulua
+### Aliases: var_col var_col,data.frame-method var_col,DatuMultzoa-method
+###   var_col,Atributua-method
+
+### ** Examples
+
+df <- data.frame(a = 1:5, b = c(2,3,4,5,6))
+var_col(df)
+
+
+
+
+### * <FOOTER>
+###
+cleanEx()
+options(digits = 7L)
+base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
+grDevices::dev.off()
+###
+### Local variables: ***
+### mode: outline-minor ***
+### outline-regexp: "\\(> \\)?### [*]+" ***
+### End: ***
+quit('no')

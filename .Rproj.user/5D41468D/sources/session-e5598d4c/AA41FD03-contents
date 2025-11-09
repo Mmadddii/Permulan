@@ -1,0 +1,95 @@
+##############################################################
+#' @title Atributuen arteko korrelazioak
+#' @description
+#' Funtzio honek dataset baten aldagai guztien arteko korrelazio-matrizea kalkulatzen du.
+#' Aldagai motaren arabera metodo egokia erabiltzen da:
+#' \itemize{
+#'   \item Bi atributu zenbakizko: Pearson korrelazioa.
+#'   \item Bi atributu kategoriko: informazio elkarrekikoa (mutual information).
+#'   \item Nahastutakoak (numeric ↔ categoric): ANOVA bidezko R² kalkulatua.
+#' }
+#'
+#' @param M `data.frame` bat, aldagai zenbakizko eta/edo kategorikoak dituena.
+#' @return Korrelazio-matrize simetriko bat (`data.frame` gisa).
+#'
+#' @examples
+#' df <- data.frame(
+#'   adina = c(20, 25, 30, 35, 40),
+#'   diru_sarrera = c(1000, 1500, 2000, 2500, 3000),
+#'   sexua = factor(c("M", "F", "M", "M", "F"))
+#' )
+#' Korrelazioak(df)
+#'
+#' @export
+##############################################################
+
+Korrelazioak <- function(M) {
+  # Data.frame dela egiaztatu
+  if (!is.data.frame(M)) stop("M data.frame bat izan behar da!")
+  
+  n <- ncol(M)
+  mat <- matrix(NA, n, n)
+  colnames(mat) <- colnames(M)
+  rownames(mat) <- colnames(M)
+  
+  for (i in 1:n) {
+    for (j in i:n) {
+      xi <- M[[i]]
+      xj <- M[[j]]
+      
+      # Biak zenbakizkoak -> Pearson
+      if (is.numeric(xi) && is.numeric(xj)) {
+        val <- suppressWarnings(cor(xi, xj, use = "complete.obs", method = "pearson"))
+      }
+      # Biak kategorikoak -> Informazio elkarrekikoa
+      else if (is.factor(xi) && is.factor(xj)) {
+        val <- mutual_information(xi, xj)
+      }
+      # Nahastuak -> ANOVA R²
+      else {
+        val <- anova_correlation(xi, xj)
+      }
+      
+      mat[i, j] <- val
+      mat[j, i] <- val
+    }
+  }
+  
+  return(as.data.frame(mat))
+}
+
+##############################################################
+# Laguntzaile funtzioak (pakete barrukoak)
+##############################################################
+
+#' @keywords internal
+mutual_information <- function(x, y) {
+  tbl <- table(x, y)
+  pxy <- tbl / sum(tbl)
+  px <- rowSums(pxy)
+  py <- colSums(pxy)
+  mi <- 0
+  for (i in seq_along(px)) {
+    for (j in seq_along(py)) {
+      if (pxy[i, j] > 0) {
+        mi <- mi + pxy[i, j] * log2(pxy[i, j] / (px[i] * py[j]))
+      }
+    }
+  }
+  return(mi)
+}
+
+#' @keywords internal
+anova_correlation <- function(x, y) {
+  if (is.numeric(x) && is.factor(y)) {
+    model <- summary(aov(x ~ y))
+  } else if (is.factor(x) && is.numeric(y)) {
+    model <- summary(aov(y ~ x))
+  } else {
+    return(NA)
+  }
+  ss_total <- sum(model[[1]][, "Sum Sq"])
+  ss_between <- model[[1]][1, "Sum Sq"]
+  r2 <- ss_between / ss_total
+  return(r2)
+}

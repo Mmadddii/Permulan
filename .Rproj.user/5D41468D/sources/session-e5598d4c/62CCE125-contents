@@ -1,0 +1,337 @@
+## ---- echo=FALSE-------------------------------------------------------------------------------------------------
+
+
+## ----------------------------------------------------------------------------------------------------------------
+ejecutarAlgo <- function (argumento.obligatorio, argumento.opcional="Valor por defecto") {
+  # Código a ejecutar
+}
+
+
+## ----------------------------------------------------------------------------------------------------------------
+getRandomPermutation <- function (size) {
+  permu <- sample(1:size)
+  return(permu)
+}
+
+getRandomPermutation(10)
+getRandomPermutation(size=5)
+
+
+## ----------------------------------------------------------------------------------------------------------------
+applyPermutation <- function (text, permu=1:nchar(text)) {
+  chars <- unlist(strsplit(text, split=""))
+  chars.reordered <- chars[permu]
+  return(paste(chars.reordered, collapse=""))
+}
+txt <- "Este es mi texto"
+applyPermutation(txt)
+applyPermutation(txt, getRandomPermutation(nchar(txt)))
+
+a<-c( 5, 2, 1, 6, 3, 4)
+order(a, decreasing = FALSE)
+## ----------------------------------------------------------------------------------------------------------------
+getAverage <- function (x, averaging.function=mean, ...){
+  return(averaging.function(x, ...))
+}
+data <- rnorm(25, mean=0, sd=1)
+data
+getAverage(data)
+getAverage(data, averaging.function=median)
+getAverage(data, averaging.function=quantile, p=0.5)
+
+
+## ----------------------------------------------------------------------------------------------------------------
+argumentos <- list()
+txt <- "Texto a permutar"
+argumentos$text  <- txt
+argumentos$permu <- sample(1:nchar(txt))
+
+do.call(what=applyPermutation, args=argumentos)
+
+
+## ----------------------------------------------------------------------------------------------------------------
+argumentos$permut <- sample(1:nchar(txt))
+do.call(what=applyPermutation, args=argumentos)
+argumentos$permu <- 1:nchar(txt)
+do.call(what=applyPermutation, args=argumentos)
+
+
+## ---- eval=TRUE-------------------------------------------------------------------------------------------------
+## ################################################################################
+## # Cabecera del script con una descripcion de lo que hace                       #
+## # *****************************************************************************#
+## # Autor/a:  Nombre de quien ha desarrollado el script, tal vez con informacion #
+## #           de contacto                                                        #
+## # Fecha:    Fecha de la ultima modificacion                                    #
+## ################################################################################
+## 
+## # DEFINICION DE VARIABLES GLOBALES ---------------------------------------------
+## parametro.1     <- "valor para el parametro 1 del analisis"
+## parametro.2     <- "valor para el parametro 2 del analisis"
+## path.resultados <- "/path/al/directorio/de/datos"
+## path.funciones  <- "/path/al/directorio/del/script/de/fuciones"
+## 
+## 
+## # FUNCIONES A UTILIZAR ---------------------------------------------------------
+## source(paste(path.funciones,"fuciones_analisis.R",sep="/"))
+## source(paste(path.funciones,"fuciones_plotting.R",sep="/"))
+## 
+## # CARGA DE DATOS ---------------------------------------------------------------
+## source("./script_carga_de_datos.R")
+## 
+## # PRIMERA PARTE DEL ANALISIS ---------------------------------------------------
+## # Codigo del analisis
+## 
+## # SEGUNDA PARTE DEL ANALISIS ---------------------------------------------------
+## # Codigo del analisis
+
+
+## ----------------------------------------------------------------------------------------------------------------
+isPermutation <- function (vector) {
+  result <- class(vector)=="numeric" | class(vector) == "integer"
+  if(result) {
+    result = all(sort(vector) == 1:length(vector))
+  }
+  return (result)
+}
+
+isPermutation(c("A", "B"))
+isPermutation(sample(1:4))
+isPermutation(c(2,1,3,5))
+
+
+## ----------------------------------------------------------------------------------------------------------------
+`%·%` <-function (permu1, permu2) {
+  if (!isPermutation(permu1) | !isPermutation(permu2)) {
+    stop ("This operator only works with permutations!")
+  } else {
+    return (permu1[permu2]) 
+  }
+}
+
+
+## ----------------------------------------------------------------------------------------------------------------
+permutacion1 <- c(5,2,1,6,3,4)
+permutacion2 <- c(6,5,4,3,2,1)
+permutacion1 %·% permutacion2
+
+
+## ----------------------------------------------------------------------------------------------------------------
+invert <- function(permu) {
+  if (!isPermutation(permu))
+  {
+    stop("This function only works with permutations")
+  } else {
+    return(order(permu))
+  }
+}
+permutacion1.inversa <- invert(permutacion1)
+permutacion1
+permutacion1.inversa
+permutacion1 %·% permutacion1.inversa
+permutacion1.inversa %·% permutacion1
+
+
+## ----------------------------------------------------------------------------------------------------------------
+swap <- function(permu, i, j) {
+  if (!isPermutation(permu))
+  {
+    stop("This function only works with permutations")
+  } else {
+    aux <- permu[i]
+    permu[i] <- permu[j]
+    permu[j] <- aux
+    return(permu)
+  }
+}
+permutacion1
+swap(permutacion1, 1, 6)
+permutacion1
+
+
+## ----------------------------------------------------------------------------------------------------------------
+insert <- function(permu, i, j) {
+  if (!isPermutation(permu))
+  {
+    stop("This function only works with permutations")
+  } else {
+    if (i>1 & j>1) {
+      np1 <- permu[1:min(i-1,j-1)]
+    } else {
+      np1 <- vector()
+    }
+    if(i < j) {
+      if (j < length(permu)) {
+        np2 <- c(permu[(i+1):j], permu[i], permu[(j+1):length(permu)])
+      } else {
+        np2 <- c(permu[(i+1):j], permu[i])
+      }
+    } else {
+      if (i < length(permu)) {
+        np2 <- c(permu[i], permu[j:(i-1)], permu[(i+1):length(permu)])
+      } else {
+        np2 <- c(permu[i], permu[j:(i-1)])
+      }
+    }
+    return(c(np1, np2))
+  }
+}
+permutacion1
+insert(permutacion1, 2, 5)
+insert(permutacion1, 2, 6)
+insert(permutacion1, 4, 2)
+insert(permutacion1, 3, 1)
+
+x=5
+## ---- eval=FALSE, echo=FALSE-------------------------------------------------------------------------------------
+## # R3.1
+
+# Funtzio generikoa sortu
+setGeneric("discretizeEW", function(x, num.bins) standardGeneric("discretizeEW"))
+
+# Metodoa numeric motarako 
+setMethod("discretizeEW", "numeric", function(x, num.bins) {
+  #Hasi aurreko konprobazioak
+  if (class(x) != "numeric") stop("x has to be numeric")
+  if (num.bins <= 1 || !is.numeric(num.bins)) stop("Please the num.bins value has to be numeric and bigger than 1")
+  else {
+    #Baloreak kalkulatu
+    maximoa <- max(x)
+    minimoa <- min(x)
+    if (maximoa == minimoa) stop("All values are equal, it is not possible to create same width bins")
+    zabalera <- (maximoa - minimoa) / num.bins
+    ebaki_puntuak <- minimoa + (1:(num.bins - 1)) * zabalera
+    tarteak <- c(-Inf, ebaki_puntuak, Inf)
+    etiketak <- paste0("I", 1:num.bins)
+    #Diskretizatu
+    x.discretized <- cut(x, breaks = tarteak, labels = etiketak, include.lowest = TRUE)
+    return(list(x.discretized = x.discretized, cut.points = ebaki_puntuak))
+  }
+})
+
+# Metodoa Atributua motarako
+setMethod("discretizeEW", "Atributua", function(x, num.bins) {
+  #Atributua numerikoa dela egiaztatu
+  if (x@mota != "numeric") stop("Atributua zenbakizkoa izan behar da!")
+  #Diskretizazioa egin numeric metodoarekin
+  emaitza <- discretizeEW(x@balioak, num.bins)
+  #Emaitzak bueltatu: Atributu berria + ebaki puntuak
+  return(list(
+    atributua = Atributua(x@izena, emaitza$x.discretized),
+    cut.points = emaitza$cut.points
+  ))
+})
+
+
+
+x <- c(11.5, 10.2, 1.2, 0.5, 5.3, 20.5, 8.4)
+discretizeEW(x,5)
+
+a <- Atributua("adina", c(11.5, 10.2, 1.2, 0.5, 5.3, 20.5, 8.4))
+discretizeEW(a, 5)
+
+R3.2
+# Funtzio generikoa sortu
+setGeneric("discretizeEF", function(x, num.bins) standardGeneric("discretizeEF"))
+
+# Bektoreentzat
+setMethod("discretizeEF", "numeric", function (x, num.bins) {
+  #Hasi aurreko konprobazioak
+  if (class(x) != "numeric")stop("x has to be numeric")
+  if (num.bins <= 1 || !is.numeric(num.bins)) stop("Please the num.bins value has to be numeric and bigger than 1")
+  else{
+    #Baloreak nuluak kendu
+    x <- x[!is.na(x)]
+    
+    #Kuantilen ebaki puntuak kalkulatu
+    probs <- seq(0, 1, length.out = num.bins + 1)
+    ebaki_puntuak <- unique(quantile(x, probs = probs))
+    
+    etiketak<-paste0("I", 1:num.bins)
+    
+    #Diskretizatu
+    x.discretized <- cut(x, breaks = ebaki_puntuak, labels = etiketak, include.lowest = TRUE)
+    
+    return(list(x.discretized = x.discretized, cut.points = ebaki_puntuak))
+  }})
+
+# Atributua klasearentzat
+setMethod("discretizeEF", "Atributua", function (x, num.bins) {
+  #Hasi aurreko konprobazioak
+  if (x@mota != "numeric") stop("Atributua zenbakizkoa izan behar da!")
+  if (num.bins <= 1 || !is.numeric(num.bins)) stop("Please the num.bins value has to be numeric and bigger than 1")
+  else{
+    #Baloreak nuluak kendu
+    balioak <- x@balioak[!is.na(x@balioak)]
+    
+    #Kuantilen ebaki puntuak kalkulatu
+    probs <- seq(0, 1, length.out = num.bins + 1)
+    ebaki_puntuak <- unique(quantile(balioak, probs = probs))
+    
+    etiketak<-paste0("I", 1:num.bins)
+    
+    #Diskretizatu
+    x.discretized <- cut(balioak, breaks = ebaki_puntuak, labels = etiketak, include.lowest = TRUE)
+    
+    # Emaitza: atributu berri bat sortu, kategorikoa bihurtuta
+    attr.new <- new("Atributua",
+                    izena = x@izena,
+                    mota = "categoric",
+                    balioak = x.discretized)
+    
+    return(list(x.discretized = attr.new, cut.points = ebaki_puntuak))
+  }})
+
+x <- c(11.5, 10.2, 1.2, 0.5, 5.3, 20.5, 8.4)
+discretizeEF(x, 2)
+
+a <- Atributua("edad", c(11.5, 10.2, 1.2, 0.5, 5.3, 20.5, 8.4))
+discretizeEF(a, 3)
+
+R3.3
+discretize <- function (x, cut.points) {
+  #Hasi aurreko konprobazioak
+  if (class(x) != "numeric")stop("x has to be numeric")
+  if (!is.numeric(cut.points)) stop("Please the num.bins value has to be numeric and bigger than 1")
+  else{
+    #Baloreak nuluak kendu
+    x <- x[!is.na(x)]
+    
+    etiketak<-paste0("I", 1:(length(cut.points)+1))
+    ebaki_puntuak<-c(-Inf,cut.points, Inf)
+    x.discretized<-cut(x, breaks = ebaki_puntuak, labels = etiketak, include.lowest = TRUE)
+    return(list(x.discretized, cut.points))
+}}
+
+x <- c(11.5, 10.2, 1.2, 0.5, 5.3, 20.5, 8.4)
+cut.points <- c(5.5, 10.5, 15.5)
+
+res <- discretize(x, cut.points)
+
+R3.4
+# Funtzio generikoa
+setGeneric("entropy", function(x) standardGeneric("entropy"))
+
+# Faktoreentzat
+setMethod("entropy", "factor", function(x){
+  if (class(x) != "factor") stop("x has to be a factor")
+  frekuentziak <- table(factor(x, levels = levels(x)))
+  probabilitatea <- frekuentziak / sum(frekuentziak)
+  H <- -sum(probabilitatea[probabilitatea > 0] * log2(probabilitatea[probabilitatea > 0]))
+  return(H)
+})
+
+# Atributua klaseko obj-entzat
+setMethod("entropy", "Atributua", function(x){
+  if (x@mota != "categoric") stop("Atributua has to be categoric!")
+  frekuentziak <- table(factor(x@balioak, levels = levels(x@balioak)))
+  probabilitatea <- frekuentziak / sum(frekuentziak)
+  H <- -sum(probabilitatea[probabilitatea > 0] * log2(probabilitatea[probabilitatea > 0]))
+  return(H)
+})
+
+x <- factor(c("a", "a", "c", "c", "c"), levels = c("a", "b", "c"))
+
+entropy(x)
+a <- Atributua("clase", factor(c("A", "B", "A", "C", "B", "A")))
+entropy(a)

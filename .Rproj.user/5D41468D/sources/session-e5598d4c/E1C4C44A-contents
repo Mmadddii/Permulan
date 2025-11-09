@@ -1,0 +1,320 @@
+## ---- echo=FALSE----------------------------------------------------------------------------------------------------------
+
+
+## -------------------------------------------------------------------------------------------------------------------------
+f <- factor(c("a", "b", "c"))
+class(f)
+typeof(f)
+attributes(f)
+
+
+## -------------------------------------------------------------------------------------------------------------------------
+vector.enteros <- c(1L, 2L, 3L)
+vector.reales <- c(1, 2, 3)
+class(vector.enteros)
+class(vector.reales)
+typeof(vector.enteros)
+typeof(vector.reales)
+attributes(vector.enteros)
+attributes(vector.reales)
+
+
+## -------------------------------------------------------------------------------------------------------------------------
+permu <- structure(1:10, class="permutation")
+class(permu)
+typeof(permu)
+
+
+## -------------------------------------------------------------------------------------------------------------------------
+permu [1:4]
+permu + 2
+
+
+## -------------------------------------------------------------------------------------------------------------------------
+createPermutation <- function (vector) {
+  if (!all(sort(unique(vector)) == 1:length(vector))) {
+    stop ("El vector pasado como argumento no es una permutación")
+  }
+  class(vector) <- "permutation"
+  return(vector)
+}
+
+isPermutation <- function (permu) {
+  return(all(sort(unique(permu)) == 1:length(permu)) && class(permu) == "permutation")
+}
+
+
+## ---- error=TRUE----------------------------------------------------------------------------------------------------------
+permu <- createPermutation(c(1,2,4,6))
+permu <- createPermutation(c(3,2,4,1,5))
+isPermutation(permu)
+isPermutation(permu + 2)
+
+
+## -------------------------------------------------------------------------------------------------------------------------
+createIdentityPermutation <- function (size) {
+  createPermutation(1:size)
+}
+
+identity.permu <- createIdentityPermutation (5)
+isPermutation(identity.permu)
+
+
+## ---- echo=-2, fig.asp=0.33-----------------------------------------------------------------------------------------------
+layout(matrix(c(1,2), nrow=1))
+par(cex=0.5)
+v <- runif(100)
+class(v)
+plot(v)
+
+d <- density(v)
+class(d)
+plot(d)
+
+
+## -------------------------------------------------------------------------------------------------------------------------
+names(d)
+d$call
+d$bw
+
+
+## -------------------------------------------------------------------------------------------------------------------------
+permu
+print.permutation <- function (x) {
+  cat("Permutation of size ", length(x), "\n\n")
+  cat(as.numeric(x))
+}
+permu
+
+
+## -------------------------------------------------------------------------------------------------------------------------
+permu
+print.permutation <- function (x) {
+  cat("S3 object of class 'permutation'\n")
+  cat("Permutation of size ", length(x), "\n\n")
+  class(x)<-NULL
+  cat(x)
+}
+permu
+
+
+## -------------------------------------------------------------------------------------------------------------------------
+permu.1 <- createPermutation(c(2,3,1,5,4))
+permu.2 <- createPermutation(c(2,1,4,5,3))
+
+permu.1+permu.2
+
+'+.permutation' <- function (e1, e2) {
+  if (length(e1) != length(e2)) {
+    stop("Permutations of different size cannot be composed!")
+  }
+  return(e1[e2])
+}
+permu.1 + permu.2
+
+
+## -------------------------------------------------------------------------------------------------------------------------
+inverse <- function (x) {
+  UseMethod("inverse")
+}
+
+'%·%' <- function(e1, e2) {
+  UseMethod("%·%")
+}
+
+
+## -------------------------------------------------------------------------------------------------------------------------
+inverse.permutation <- function (x) {
+  return(order(x))
+}
+
+'%·%.permutation' <- function (e1, e2) {
+  if (length(e1) != length(e2)) {
+    stop("Permutations of different size cannot be composed!")
+  }
+  return(e1[e2])
+}
+
+permu.1 %·% inverse(permu.1)
+
+
+## ---- error=TRUE----------------------------------------------------------------------------------------------------------
+permu.1*permu.2
+permu.1*4
+permu.1-permu.1
+Ops.permutation <- function (e1, e2) {
+  stop("Operators are not defined for objects of class 'permutation'")
+}
+permu.1*permu.2
+permu.1*4
+permu.1-permu.1
+
+
+## -------------------------------------------------------------------------------------------------------------------------
+setClass(Class="Permutation", 
+         slots=c("permutation"="numeric", "size"="numeric"))
+
+
+## ---- error=TRUE----------------------------------------------------------------------------------------------------------
+permu <- new(Class="Permutation", permutation=c(2,1,3,5,6), size=3)
+permu
+
+
+## ---- error=TRUE----------------------------------------------------------------------------------------------------------
+
+checkValidityPermutation <- function(object) {
+  if (length(object@permutation) != object@size) {
+    stop("The 'size' parameter is not equal to the length of the vector")
+  }
+  if (all(sort(unique(object@permutation)) == 1:object@size)){
+    return(TRUE)
+  } else {
+    stop("The vector is not a valid permutation")
+  }
+}
+
+setValidity(Class="Permutation", method=checkValidityPermutation)
+permu <- new(Class="Permutation", permutation=c(2,1,3,5,6), size=3)
+permu <- new(Class="Permutation", permutation=c(2,1,3,5,6), size=5)
+permu <- new(Class="Permutation", permutation=c(2,1,3,5,4), size=5)
+permu
+
+
+## -------------------------------------------------------------------------------------------------------------------------
+setClass(Class="Permutation", 
+         slots=c("permutation"="numeric", "size"="numeric"),
+         prototype=list(permutation=1:10, size=10))
+
+new("Permutation")
+
+
+## -------------------------------------------------------------------------------------------------------------------------
+
+permutation(c(2,3,1,4))
+
+
+## -------------------------------------------------------------------------------------------------------------------------
+setGeneric(name="inverse", def=function(x) standardGeneric("inverse"))
+
+
+## -------------------------------------------------------------------------------------------------------------------------
+setMethod(f="inverse",
+          signature="Permutation",
+          definition=function(x) {
+            return(permutation(order(x@permutation)))
+          })
+permu.1 <- permutation(c(2,3,4,1,5,6))
+permu.1
+inverse(permu.1)
+
+
+## ---- eval=FALSE, echo=FALSE----------------------------------------------------------------------------------------------
+## # R5.1
+permutation <- function (vector) {
+  size <- length(vector)
+  object <- new("Permutation", permutation=vector, size=size)
+  return(object)
+}
+
+setGeneric("%·%", function(e1, e2) standardGeneric("%·%"))
+
+setMethod(
+  f = "%·%",
+  signature = c("Permutation", "Permutation"),
+  definition = function(e1, e2) {
+    if (e1@size != e2@size) {
+      stop("Permutazioak tamaina ezberdinekoak dira!")  
+    }
+    # Funtzioa aplikatu
+    new("Permutation",
+        permutation = e1@permutation[e2@permutation],
+        size = e1@size)
+  }
+)
+
+
+p1 <- permutation(c(2, 3, 1))
+p2 <- permutation(c(3, 1, 2))
+
+# Composición
+p1 %·% p2
+
+
+
+## # R5.2
+
+#S4 klasea definitu
+setClass(
+  "Atributua",
+  slots = c(
+    izena = "character",   # atributuan izena
+    mota = "character",    # mota: "numerikoa" edoo "kategorikoa"
+    balioak = "ANY"        # balore errealak
+  ),
+  prototype = list(
+    izena = "atributu_ezezaguna",
+    mota = "numeric",
+    balioak = numeric()
+  )
+)
+
+#Datu mota detektatu eta objektua sortu
+Atributua <- function(izena, balioak) {
+  if (is.numeric(balioak)) {
+    mota <- "numeric"
+  } else if (is.factor(balioak) || is.character(balioak)) {
+    mota <- "categoric"
+    balioak <- as.factor(balioak)
+  } else {
+    stop("Ezin da atributu mota ezagutu (zenbakizko edo kategorikoa izan behar du)")
+  }
+  new("Atributua", izena = izena, mota = mota, balioak = balioak)
+}
+
+## # R5.3
+
+setClass(
+  "DatuMultzoa",
+  slots = c(
+    atributuak = "list",    #  "Atributua" objetu lista
+    klasea = "Atributua"    # klase atributu berezia
+  )
+)
+
+DatuMultzoa <- function(datuak, klase_izena = NULL) {
+  # datuak: data.frame 
+  # klase_izena: klase aldagaien izena (aukerazkoa)
+  
+  if (!is.data.frame(datuak)) stop("Datuek data.frame motakoak izan behar dute")
+  
+  # Atributu lista sortu
+  atributu_lista <- lapply(names(datuak), function(col) {
+    Atributua(col, datuak[[col]])
+  })
+  names(atributu_lista) <- names(datuak)
+  
+  # Klaserik badago atera
+  if (!is.null(klase_izena)) {
+    klasea <- atributu_lista[[klase_izena]]
+    atributu_lista[[klase_izena]] <- NULL
+  } else {
+    klasea <- Atributua("Ezezaguna", factor())
+  }
+  
+  new("DatuMultzoa", atributuak = atributu_lista, klasea = klasea)
+}
+
+
+setMethod(
+  f = "show",
+  signature = "DatuMultzoa",
+  definition = function(object) {
+    cat("DatuMultzoa objektua:\n")
+    cat("  Atributuak:\n")
+    for (a in object@atributuak) {
+      cat("   -", a@izena, "(", a@mota, ")\n")
+    }
+    cat("  Klasea:", object@klasea@izena, "(", object@klasea@mota, ")\n")
+  }
+)
+

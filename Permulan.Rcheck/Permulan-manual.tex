@@ -1,0 +1,769 @@
+\nonstopmode{}
+\documentclass[a4paper]{book}
+\usepackage[times,inconsolata,hyper]{Rd}
+\usepackage{makeidx}
+\makeatletter\@ifl@t@r\fmtversion{2018/04/01}{}{\usepackage[utf8]{inputenc}}\makeatother
+% \usepackage{graphicx} % @USE GRAPHICX@
+\makeindex{}
+\begin{document}
+\chapter*{}
+\begin{center}
+{\textbf{\huge Package `Permulan'}}
+\par\bigskip{\large \today}
+\end{center}
+\ifthenelse{\boolean{Rd@use@hyper}}{\hypersetup{pdftitle = {Permulan: Datuen aurreprozesamendurako eta azterketa estatistikorako tresna multzoa (S4 egiturak erabiliz)}}}{}
+\ifthenelse{\boolean{Rd@use@hyper}}{\hypersetup{pdfauthor = {Maddi Olaetxea}}}{}
+\begin{description}
+\raggedright{}
+\item[Type]\AsIs{Package}
+\item[Title]\AsIs{Datuen aurreprozesamendurako eta azterketa estatistikorako
+tresna multzoa (S4 egiturak erabiliz)}
+\item[Version]\AsIs{0.1.0}
+\item[Description]\AsIs{Pakete honek datuen aurreprozesamendurako eta azterketa estatistikorako tresna multzoa eskaintzen du,
+S4 klaseen bidez egituratuta. Hezkuntza helburuetarako erabilera sustatzen du eta adibide praktikoak eskaintzen ditu.}
+\item[License]\AsIs{MIT + file LICENSE}
+\item[Encoding]\AsIs{UTF-8}
+\item[RoxygenNote]\AsIs{7.3.3}
+\item[Imports]\AsIs{ggplot2, reshape2, scales, methods}
+\item[Suggests]\AsIs{knitr, rmarkdown}
+\item[VignetteBuilder]\AsIs{knitr}
+\item[NeedsCompilation]\AsIs{no}
+\item[Author]\AsIs{Maddi Olaetxea [aut, cre]}
+\item[Maintainer]\AsIs{Maddi Olaetxea }\email{maddiolausa@gmail.com}\AsIs{}
+\end{description}
+\Rdcontents{Contents}
+\HeaderA{Permulan-package}{Permulan: Datuen aurreprozesamendurako eta azterketa estatistikorako tresna multzoa (S4 egiturak erabiliz)}{Permulan.Rdash.package}
+\aliasA{Permulan}{Permulan-package}{Permulan}
+\keyword{internal}{Permulan-package}
+%
+\begin{Description}
+Pakete honek datuen aurreprozesamendurako eta azterketa estatistikorako tresna multzoa eskaintzen du, S4 klaseen bidez egituratuta. Hezkuntza helburuetarako erabilera sustatzen du eta adibide praktikoak eskaintzen ditu.
+\end{Description}
+%
+\begin{Author}
+\strong{Maintainer}: Maddi Olaetxea \email{maddiolausa@gmail.com}
+
+\end{Author}
+\HeaderA{Atributua}{Atributua instantzia sortzeko funtzioa}{Atributua}
+%
+\begin{Description}
+Atributu bat sortzen du, bere izena, mota eta balioekin.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+Atributua(izena, balioak, mota = NULL)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{izena}] Atributuaren izena (karaktere kate bat).
+
+\item[\code{balioak}] Atributuaren balioak (zenbakizkoak edo kategorikoak).
+
+\item[\code{mota}] Atributuaren mota (aukerazkoa: `"numeric"` edo `"categoric"`).
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+"Atributua" klaseko objektu bat.
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+Atributua("adina", c(10, 20, 30))
+\end{ExampleCode}
+\end{Examples}
+\HeaderA{Atributua-class}{Atributua klasea}{Atributua.Rdash.class}
+%
+\begin{Description}
+Datuen atributu baten egitura eta bere propietateak azaltzen ditu.
+\end{Description}
+%
+\begin{Section}{Slots}
+
+\begin{description}
+
+\item[\code{izena}] Atributuaren izena (karaktere kate bat).
+
+\item[\code{mota}] Atributuaren mota: `"numeric"` edo `"categoric"`.
+
+\item[\code{balioak}] Atributuaren balioak (numeric, factor edo bestelakoak).
+
+\end{description}
+\end{Section}
+%
+\begin{Examples}
+\begin{ExampleCode}
+a <- Atributua("adina", c(20, 30, 40, 50, 60, 70, 80))
+a
+
+\end{ExampleCode}
+\end{Examples}
+\HeaderA{DatuMultzoa}{DatuMultzoa instantzia sortzeko funtzioa}{DatuMultzoa}
+%
+\begin{Description}
+'DatuMultzoa' klaseko objektu bat sortzen du `data.frame` batetik.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+DatuMultzoa(datuak, klase_izena = NULL)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{datuak}] Data.frame bat atributuak eta klase aldagaia jasotzen dituena.
+
+\item[\code{klase\_izena}] Klase gisa erabili beharreko zutabearen izena (aukerakoa).
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+"DatuMultzoa" klaseko objektu bat.
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+datuak <- data.frame(adina = c(23, 45, 34), sexua = c("M", "F", "M"))
+DatuMultzoa(datuak, klase_izena = "sexua")
+\end{ExampleCode}
+\end{Examples}
+\HeaderA{DatuMultzoa-class}{DatuMultzoa S4 klasearen definizioa}{DatuMultzoa.Rdash.class}
+%
+\begin{Description}
+'DatuMultzoa' klaseak atributu multzo bat eta klase-aldagai bat gordetzen ditu.
+\end{Description}
+%
+\begin{Section}{Slots}
+
+\begin{description}
+
+\item[\code{atributuak}] Atributuen zerrenda bat (`Atributua` objektuen lista).
+
+\item[\code{klasea}] Klase aldagaia (`Atributua` klaseko objektu bat).
+
+\end{description}
+\end{Section}
+%
+\begin{SeeAlso}
+[Atributua] klasea, atributu indibidualak definitzeko.
+\end{SeeAlso}
+\HeaderA{discretize}{Diskretizazioa puntu ebakiekin}{discretize}
+\aliasA{discretize,Atributua-method}{discretize}{discretize,Atributua.Rdash.method}
+\aliasA{discretize,DatuMultzoa-method}{discretize}{discretize,DatuMultzoa.Rdash.method}
+\aliasA{discretize,numeric-method}{discretize}{discretize,numeric.Rdash.method}
+%
+\begin{Description}
+`discretize()` funtzioak balio jarraituak kategoria tarteetan bihurtzen ditu
+emandako ebaki puntuak erabiliz.
+Funtzio honek `numeric`, `Atributua` eta `DatuMultzoa` klaseetarako metodoak ditu.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+discretize(x, cut.points)
+
+## S4 method for signature 'numeric'
+discretize(x, cut.points)
+
+## S4 method for signature 'Atributua'
+discretize(x, cut.points)
+
+## S4 method for signature 'DatuMultzoa'
+discretize(x, cut.points)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{x}] Diskretizatzeko objektua (`numeric`, `Atributua` edo `DatuMultzoa`)
+
+\item[\code{cut.points}] Ebaki puntuak adierazten dituen bektore zenbakizkoa
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+\begin{itemize}
+
+\item{} `numeric` sarreran: diskretizatutako balioak eta ebaki puntuak dituen zerrenda bat.
+\item{} `Atributua` sarreran: atributu kategoriko bihurtutako `Atributua` objektu bat.
+\item{} `DatuMultzoa` sarreran: atributu zenbakizko guztiak diskretizatutako `DatuMultzoa` objektu bat.
+
+\end{itemize}
+
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+balioak <- c(20, 30, 40, 50)
+discretize(balioak, c(25, 35, 45))
+
+\end{ExampleCode}
+\end{Examples}
+\HeaderA{discretizeEF}{Equal Frequency diskretizazioa}{discretizeEF}
+\aliasA{discretizeEF,Atributua-method}{discretizeEF}{discretizeEF,Atributua.Rdash.method}
+\aliasA{discretizeEF,numeric-method}{discretizeEF}{discretizeEF,numeric.Rdash.method}
+%
+\begin{Description}
+`discretizeEF()` funtzioak balio jarraituak kuantilen arabera
+tarte berdinetan banatzen ditu (maiztasun berdineko binak).
+Funtzio honek `numeric` eta `Atributua` klaseetarako metodoak ditu.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+discretizeEF(x, num.bins)
+
+## S4 method for signature 'numeric'
+discretizeEF(x, num.bins)
+
+## S4 method for signature 'Atributua'
+discretizeEF(x, num.bins)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{x}] Diskretizatzeko objektua (`numeric` edo `Atributua`)
+
+\item[\code{num.bins}] Zenbat tarte sortu nahi diren adierazten duen balio zenbakizkoa
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+\begin{itemize}
+
+\item{} `numeric` sarreran: diskretizatutako balioak eta ebaki puntuak dituen zerrenda bat.
+\item{} `Atributua` sarreran: kategoria tarteetan bihurtutako `Atributua` objektua eta bere ebaki puntuak.
+
+\end{itemize}
+
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+x <- c(10, 20, 25, 30, 40, 50, 60, 70)
+discretizeEF(x, num.bins = 3)
+
+\end{ExampleCode}
+\end{Examples}
+\HeaderA{discretizeEW}{Equal Width diskretizazioa}{discretizeEW}
+\aliasA{discretizeEW,Atributua-method}{discretizeEW}{discretizeEW,Atributua.Rdash.method}
+\aliasA{discretizeEW,numeric-method}{discretizeEW}{discretizeEW,numeric.Rdash.method}
+%
+\begin{Description}
+`discretizeEW()` funtzioak balio jarraituak tarte zabalera berdinetan banatzen ditu.
+Hau da, datuen balio minimo eta maximoaren artean `num.bins` tarte sortzen dira,
+non tarte bakoitzaren zabalera konstantea den.
+
+Funtzio honek `numeric` eta `Atributua` klaseetarako metodoak ditu.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+discretizeEW(x, num.bins)
+
+## S4 method for signature 'numeric'
+discretizeEW(x, num.bins)
+
+## S4 method for signature 'Atributua'
+discretizeEW(x, num.bins)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{x}] Diskretizatzeko datuak (`numeric` edo `Atributua` klaseko objektua)
+
+\item[\code{num.bins}] Sortu nahi diren tarte kopurua (zenbakizkoa, >1)
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+\begin{itemize}
+
+\item{} `numeric` sarreran: diskretizatutako balioak eta ebaki puntuak dituen zerrenda.
+\item{} `Atributua` sarreran: kategoriatan bihurtutako `Atributua` objektua eta bere ebaki puntuak.
+
+\end{itemize}
+
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+# --- Adibidea 1: numeric bektore batekin ---
+x <- c(10, 20, 25, 30, 40, 50, 60, 70)
+emaitza <- discretizeEW(x, num.bins = 3)
+emaitza$x.discretized
+emaitza$cut.points
+
+# --- Adibidea 2: Atributua klasearekin ---
+a <- Atributua("adina", c(20, 30, 40, 50, 60, 70, 80))
+a_disk <- discretizeEW(a, num.bins = 3)
+a_disk$atributua@balioak
+a_disk$cut.points
+
+\end{ExampleCode}
+\end{Examples}
+\HeaderA{entropy}{Entropiaren kalkulua atributu kategorikoentzat}{entropy}
+\aliasA{entropy,Atributua-method}{entropy}{entropy,Atributua.Rdash.method}
+\aliasA{entropy,factor-method}{entropy}{entropy,factor.Rdash.method}
+\aliasA{entropy\_by\_column}{entropy}{entropy.Rul.by.Rul.column}
+\aliasA{entropy\_by\_column,data.frame-method}{entropy}{entropy.Rul.by.Rul.column,data.frame.Rdash.method}
+\aliasA{entropy\_by\_column,DatuMultzoa-method}{entropy}{entropy.Rul.by.Rul.column,DatuMultzoa.Rdash.method}
+%
+\begin{Description}
+`entropy()` funtzioak aldagai diskretu baten entropia kalkulatzen du.
+`entropy\_by\_column()` funtzioak dataset edo `DatuMultzoa` batean
+atributu guztien entropia kalkulatzen du zutabeka.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+entropy(x)
+
+## S4 method for signature 'factor'
+entropy(x)
+
+## S4 method for signature 'Atributua'
+entropy(x)
+
+entropy_by_column(x)
+
+## S4 method for signature 'data.frame'
+entropy_by_column(x)
+
+## S4 method for signature 'DatuMultzoa'
+entropy_by_column(x)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{x}] Objektua (`factor`, `Atributua`, `data.frame` edo `DatuMultzoa`).
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+`entropy()` → balio bakarra (`numeric`),
+`entropy\_by\_column()` → bektore izenduna (`numeric`).
+\end{Value}
+%
+\begin{SeeAlso}
+`var\_col()` eta `roc\_analisi()`
+\end{SeeAlso}
+%
+\begin{Examples}
+\begin{ExampleCode}
+fakt <- factor(c("A", "A", "B", "B", "C", "A"))
+entropy(fakt)
+df <- data.frame(kol1 = factor(c("A", "A", "B", "C")),
+                 kol2 = factor(c("X", "X", "X", "Y")))
+entropy_by_column(df)
+dm <- DatuMultzoa(df)
+entropy_by_column(dm)
+
+\end{ExampleCode}
+\end{Examples}
+\HeaderA{filter\_metrics}{Atributuen filtraketa metriketan oinarrituta}{filter.Rul.metrics}
+\aliasA{filter\_metrics,data.frame-method}{filter\_metrics}{filter.Rul.metrics,data.frame.Rdash.method}
+\aliasA{filter\_metrics,DatuMultzoa-method}{filter\_metrics}{filter.Rul.metrics,DatuMultzoa.Rdash.method}
+%
+\begin{Description}
+Funtzio hauek dataset baten atributuak filtratzen dituzte
+aurrez kalkulatutako metrikak kontuan hartuta:
+\begin{itemize}
+
+\item{} Bariantza minimoa atributu numerikoentzat
+\item{} Entropia minimoa atributu kategorikoentzat
+\item{} AUC minimoa atributu numerikoentzat (klasea emanda)
+
+\end{itemize}
+
+
+Metodoak `data.frame` eta `DatuMultzoa` klaseetarako definituta daude.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+filter_metrics(x, ...)
+
+## S4 method for signature 'data.frame'
+filter_metrics(x, var_min = 0, entropy_min = 0, auc_min = 0, klase = NULL, ...)
+
+## S4 method for signature 'DatuMultzoa'
+filter_metrics(x, var_min = 0, entropy_min = 0, auc_min = 0, ...)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{x}] Dataset bat (`data.frame` edo `DatuMultzoa`)
+
+\item[\code{...}] Argumentu gehigarriak; metodoen arteko bateragarritasunerako.
+
+\item[\code{var\_min}] Bariantza minimoa (lehenetsia = 0)
+
+\item[\code{entropy\_min}] Entropia minimoa (lehenetsia = 0)
+
+\item[\code{auc\_min}] AUC minimoa (lehenetsia = 0)
+
+\item[\code{klase}] Klase aldagaia edo bektore binarioa AUC kalkulatzeko (`data.frame` metodoan bakarrik erabiltzen da)
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+Filtratutako objektu berria (`data.frame` edo `DatuMultzoa`)
+\end{Value}
+%
+\begin{SeeAlso}
+`var\_col()` — atributu numerikoen bariantza kalkulatzeko,
+`entropy()` — atributu kategorikoen entropia kalkulatzeko,
+`roc\_analisi()` — AUC kalkulatzeko.
+\end{SeeAlso}
+%
+\begin{Examples}
+\begin{ExampleCode}
+df <- data.frame(
+  x1 = c(1,2,3,4,5),
+  x2 = c(5,5,5,5,5),
+  cat = factor(c("A","B","A","B","C")),
+  label = c(TRUE, FALSE, TRUE, FALSE, TRUE)
+)
+
+# Data.frame baten adibidea
+filter_metrics(df, var_min = 1, entropy_min = 0.5)
+
+# DatuMultzoa objektu baten adibidea
+dm <- DatuMultzoa(df, klase_izena = "label")
+filter_metrics(dm, var_min = 1, entropy_min = 0.5)
+
+\end{ExampleCode}
+\end{Examples}
+\HeaderA{Korrelazioak\_irudikatu}{Korrelazioen irudikapena}{Korrelazioak.Rul.irudikatu}
+%
+\begin{Description}
+Dataset baten korrelazio-matrizea edo informazio mutuala irudikatzen du `ggplot2` erabiliz.
+Zenbakizko aldagaietarako korrelazioak kalkulatzen dira.
+*Adi!!!* Jatorrizko datuak sartu behar dira, funtzioak falkulatzen ditu korrelazioak eta bertatik irudikatzen ditu.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+Korrelazioak_irudikatu(M)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{M}] Data.frame edo matrize bat, non zutabe guztiak zenbakizkoak diren.
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+Korrelazio-matrizearen heatmap bat bistaratzen du.
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+df <- data.frame(
+  adina = c(20, 25, 30, 35, 40, 45, 50),
+  soldata = c(5000, 4000, 3000, 2000, 1000, 800, 600),
+  altuera = c(1.60, 1.65, 1.70, 1.75, 1.78, 1.82, 1.85)
+)
+Korrelazioak_irudikatu(df)
+
+\end{ExampleCode}
+\end{Examples}
+\HeaderA{korrelazio\_matrizea}{Korrelazioak edo informazio mutua aldagai guztien artean}{korrelazio.Rul.matrizea}
+\aliasA{korrelazio\_matrizea,data.frame-method}{korrelazio\_matrizea}{korrelazio.Rul.matrizea,data.frame.Rdash.method}
+\aliasA{korrelazio\_matrizea,DatuMultzoa-method}{korrelazio\_matrizea}{korrelazio.Rul.matrizea,DatuMultzoa.Rdash.method}
+%
+\begin{Description}
+Datu-multzo bateko aldagai guztien arteko erlazioa kalkulatzen du:
+\begin{itemize}
+
+\item{} Pearson korrelazioa (biak zenbakizkoak direnean)
+\item{} Informazio mutuoa (biak kategorikoak direnean)
+
+\end{itemize}
+
+Funtzioak aldagai bakoitzaren mota automatikoki detektatzen du.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+korrelazio_matrizea(x, ...)
+
+## S4 method for signature 'data.frame'
+korrelazio_matrizea(x, ...)
+
+## S4 method for signature 'DatuMultzoa'
+korrelazio_matrizea(x, ...)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{x}] Data frame edo \code{DatuMultzoa} objektua.
+
+\item[\code{...}] Argumentu gehigarriak, erabilera barnekoetarako.
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+Korrelazio edo informazio mutua matrize bat.
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+df <- data.frame(
+  adina = c(20, 25, 30, 35, 40),
+  soldata = c(1000, 1200, 1500, 1800, 2000),
+  sexua = factor(c("M", "F", "M", "M", "F")),
+  hiria = factor(c("A", "B", "A", "C", "B"))
+)
+
+korrelazio_matrizea(df)
+
+\end{ExampleCode}
+\end{Examples}
+\HeaderA{normalize}{Datuen normalizazioa eta estandarizazioa}{normalize}
+\aliasA{normalize,Atributua-method}{normalize}{normalize,Atributua.Rdash.method}
+\aliasA{normalize,data.frame-method}{normalize}{normalize,data.frame.Rdash.method}
+\aliasA{normalize,DatuMultzoa-method}{normalize}{normalize,DatuMultzoa.Rdash.method}
+\aliasA{normalize,numeric-method}{normalize}{normalize,numeric.Rdash.method}
+\aliasA{standardize}{normalize}{standardize}
+\aliasA{standardize,Atributua-method}{normalize}{standardize,Atributua.Rdash.method}
+\aliasA{standardize,data.frame-method}{normalize}{standardize,data.frame.Rdash.method}
+\aliasA{standardize,DatuMultzoa-method}{normalize}{standardize,DatuMultzoa.Rdash.method}
+\aliasA{standardize,numeric-method}{normalize}{standardize,numeric.Rdash.method}
+%
+\begin{Description}
+Bi funtzio generiko eskaintzen dira:
+\begin{itemize}
+
+\item{} `normalize()`: datuak 0 eta 1 arteko tartean eskalatzen ditu.
+\item{} `standardize()`: datuak batezbesteko 0 eta desbideratze estandar 1 duten eskalara eramaten ditu.
+
+\end{itemize}
+
+
+Metodoak `numeric`, `Atributua`, `data.frame` eta `DatuMultzoa` klaseetarako definituta daude.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+normalize(x)
+
+## S4 method for signature 'numeric'
+normalize(x)
+
+## S4 method for signature 'numeric'
+standardize(x)
+
+## S4 method for signature 'Atributua'
+normalize(x)
+
+## S4 method for signature 'Atributua'
+standardize(x)
+
+## S4 method for signature 'DatuMultzoa'
+normalize(x)
+
+## S4 method for signature 'DatuMultzoa'
+standardize(x)
+
+## S4 method for signature 'data.frame'
+normalize(x)
+
+## S4 method for signature 'data.frame'
+standardize(x)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{x}] Normalizatu edo estandarizatu beharreko objektua.
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+Objektu bera, baina balioak normalizatuak edo estandarizatuak:
+\begin{itemize}
+
+\item{} `numeric`: bektore zenbakizkoa
+\item{} `Atributua`: `Atributua` objektu berria
+\item{} `data.frame`: datu-markoa eskalatua
+\item{} `DatuMultzoa`: atributuak eskalatu dituen objektua
+
+\end{itemize}
+
+\end{Value}
+%
+\begin{SeeAlso}
+`var\_col()` — bariantza kalkulatzeko,
+`entropy()` — atributu kategorikoen informazio maila neurtzeko.
+\end{SeeAlso}
+%
+\begin{Examples}
+\begin{ExampleCode}
+x <- c(10, 20, 30)
+normalize(x)
+standardize(x)
+
+df <- data.frame(a = 1:5, b = 6:10)
+normalize(df)
+standardize(df)
+
+\end{ExampleCode}
+\end{Examples}
+\HeaderA{roc\_analisi}{AUC kalkulua atributu jarraituentzat}{roc.Rul.analisi}
+\aliasA{roc\_analisi,data.frame-method}{roc\_analisi}{roc.Rul.analisi,data.frame.Rdash.method}
+\aliasA{roc\_analisi,DatuMultzoa-method}{roc\_analisi}{roc.Rul.analisi,DatuMultzoa.Rdash.method}
+%
+\begin{Description}
+`roc\_analisi()` funtzioak atributu jarraitu baten eta klase binario baten arteko
+erlazioa ebaluatzen du, ROC kurba eta AUC balioa kalkulatuz.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+roc_analisi(df)
+
+## S4 method for signature 'data.frame'
+roc_analisi(df)
+
+## S4 method for signature 'DatuMultzoa'
+roc_analisi(df)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{df}] `data.frame` edo `DatuMultzoa` objektua.
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+Zerrenda bat: `curva` (ROC kurbaren puntu guztiak) eta `AUC` (azalera).
+\end{Value}
+%
+\begin{SeeAlso}
+`var\_col()` eta `entropy()`
+\end{SeeAlso}
+%
+\begin{Examples}
+\begin{ExampleCode}
+df_test <- data.frame(
+  aldagaia = c(0.1, 0.4, 0.35, 0.8, 0.9, 0.2, 0.6, 0.5, 0.7, 0.3),
+  etiketa  = c(FALSE, FALSE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, TRUE, FALSE)
+)
+emaitza <- roc_analisi(df_test)
+print(emaitza$AUC)
+
+\end{ExampleCode}
+\end{Examples}
+\HeaderA{show,DatuMultzoa-method}{DatuMultzoa objektua erakusteko metodoa}{show,DatuMultzoa.Rdash.method}
+%
+\begin{Description}
+`show()` metodoa 'DatuMultzoa' klaseko objektuak pantailaratzeko.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+## S4 method for signature 'DatuMultzoa'
+show(object)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{object}] DatuMultzoa klaseko objektua.
+\end{ldescription}
+\end{Arguments}
+\HeaderA{var\_col}{Atributu zenbakizkoen bariantza kalkulua}{var.Rul.col}
+\aliasA{var\_col,Atributua-method}{var\_col}{var.Rul.col,Atributua.Rdash.method}
+\aliasA{var\_col,data.frame-method}{var\_col}{var.Rul.col,data.frame.Rdash.method}
+\aliasA{var\_col,DatuMultzoa-method}{var\_col}{var.Rul.col,DatuMultzoa.Rdash.method}
+%
+\begin{Description}
+`var\_col()` funtzioak atributu zenbakizkoen bariantza kalkulatzen du.
+Metodoak `data.frame`, `Atributua` eta `DatuMultzoa` klaseetarako bertsioak ditu.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+var_col(x)
+
+## S4 method for signature 'data.frame'
+var_col(x)
+
+## S4 method for signature 'DatuMultzoa'
+var_col(x)
+
+## S4 method for signature 'Atributua'
+var_col(x)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{x}] Aztertzeko objektua (`data.frame`, `Atributua` edo `DatuMultzoa`).
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+Bariantza balioak dituen bektore izenduna edo balio bakarra (`numeric`).
+\end{Value}
+%
+\begin{SeeAlso}
+`entropy()` — atributu kategorikoen informazio maila kalkulatzeko.
+\end{SeeAlso}
+%
+\begin{Examples}
+\begin{ExampleCode}
+df <- data.frame(a = 1:5, b = c(2,3,4,5,6))
+var_col(df)
+
+\end{ExampleCode}
+\end{Examples}
+\HeaderA{Visualizar\_ROC}{ROC kurbaren irudikapena (AUC plot)}{Visualizar.Rul.ROC}
+%
+\begin{Description}
+`roc\_analisi()` funtzioaren emaitzetatik ROC kurba marrazten du eta
+AUC balioa irudikatzen du.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+Visualizar_ROC(resultado)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{resultado}] `roc\_analisi()` funtzioaren emaitza (`curva` eta `AUC` elementuak dituen zerrenda)
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+ROC kurba marrazten du pantailan.
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+df <- data.frame(
+  adina = c(20, 25, 30, 35, 40, 45, 50),
+  soldata = c(5000, 4000, 3000, 2000, 1000, 800, 600),
+  altuera = c(1.60, 1.65, 1.70, 1.75, 1.78, 1.82, 1.85)
+)
+Korrelazioak_irudikatu(df)
+
+\end{ExampleCode}
+\end{Examples}
+\printindex{}
+\end{document}

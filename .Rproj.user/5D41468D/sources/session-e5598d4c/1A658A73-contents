@@ -1,0 +1,224 @@
+## ---- echo=FALSE----------------------------------------------------------------------------------------------------------
+
+
+## -------------------------------------------------------------------------------------------------------------------------
+path.datos <- "https://people.sc.fsu.edu/~jburkardt/data/csv/oscar_age_female.csv"
+datos <- read.csv(path.datos)
+datos[1:5,]
+
+
+## -------------------------------------------------------------------------------------------------------------------------
+class(datos$Movie)
+datos <- read.csv(path.datos, stringsAsFactors=FALSE)
+class(datos$Movie)
+
+
+## ---- eval=FALSE----------------------------------------------------------------------------------------------------------
+## install.packages("googlesheets")
+## gs_ff()
+## googlesheets::gs_ff()
+## library("googlesheets")
+## gs_ff()
+
+
+## ---- eval=FALSE----------------------------------------------------------------------------------------------------------
+## browseVignettes("googlesheets")
+
+
+## -------------------------------------------------------------------------------------------------------------------------
+saveRDS(datos, file="datos_de_peliculas.Rds")
+datos.peliculas <- readRDS(file="datos_de_peliculas.Rds")
+datos[12, ]
+datos.peliculas[12, ]
+
+
+## -------------------------------------------------------------------------------------------------------------------------
+datos.filtrados <- datos[datos$Year>2000, ]
+save(datos, datos.filtrados, datos.peliculas, file="datos.RData")
+ls()
+rm(list=ls())
+ls()
+load(file="datos.RData")
+ls()
+
+
+## -------------------------------------------------------------------------------------------------------------------------
+writePermutationFile <- function (permus, file.path) {
+  # Control of the input
+  if (class(permus) == "matrix") {
+    name <- NULL
+    perms <- permus
+  } else if (class(permus) == "list"){
+    if (class(permus[[1]]) == "character") {
+      name <- permus[[1]]
+    } else {
+      stop("El primer elemento de la lista debe ser un string")
+    }
+    if (class(permus[[2]]) == "matrix") {
+      perms <- permus[[2]]
+    } else {
+      stop("El primer elemento de la lista debe ser un string")
+    }
+  } else {
+    stop ("El argumento permus debe ser o bien una matriz o bien una 
+          lista con dos elementos, un string y una matriz")
+  }
+  # Check all rows are correct permutations
+  permutation.size <- ncol(perms)
+  aux <- apply(perms, MARGIN=1, 
+               FUN = function (row) {
+                 return(all(sort(row) == 1:permutation.size))
+               })
+  if (!all(aux)) {
+    stop("No todas las filas de la matriz son permutaciones. 
+         Revisa la(s) fila(s) ", 
+         paste(which(!aux), collapse=","))
+  }
+  
+  con <- file(description = file.path, open="w")
+  writeLines(paste("#Size: ", permutation.size, sep=""), con=con)
+  if (!is.null(name)) {
+    writeLines(paste("#Name: ", name, sep=""), con=con)
+  }
+  if (!is.null(colnames(permus))) {
+    writeLines(paste("#Header: ", paste(colnames(permus), collapse=","), 
+                     sep=""), con=con)
+  }
+  lines <- apply(perms, MARGIN=1,
+                 FUN=function(row) {
+                   return(paste(row, collapse=","))
+                 })
+  writeLines(lines, con=con)
+  close(con)
+}
+
+
+## ---- error=TRUE----------------------------------------------------------------------------------------------------------
+prs <- rbind(c(1,3,4,2,5),
+             c(1,2,4,3,5),
+             c(2,4,3,1,5),
+             c(1,3,4,5,5))
+permutaciones <- list(Name="Ejemplo", permutations=prs)
+path.fichero <- "Ejemplo_de_fichero_de_permutaciones.prms"
+writePermutationFile(permus=permutaciones, file.path=path.fichero)
+permutaciones$permutations <- permutaciones$permutations[-4, ]
+writePermutationFile(permus=permutaciones, file.path=path.fichero)
+
+
+## -------------------------------------------------------------------------------------------------------------------------
+readLines(path.fichero)
+
+
+## -------------------------------------------------------------------------------------------------------------------------
+readPermutationFile <- function(file.path) {
+  con <- file(description=file.path, open="r")
+  lines <- readLines(con=con)
+  close(con)
+  if (substr(lines[1], 1, 7) != "#Size: ") {
+    stop("La primera linea tiene que tener el formato:\n",
+         "#Size: tamañodelaspermutaciones")
+  }
+  permutation.size <- as.numeric(gsub("#Size: ", "", lines[1]))
+  i <- 2
+  if (substr(lines[i], 1, 7) == "#Name: ") {
+    name <- gsub("#Name: ", "", lines[i])
+    i <- i + 1
+  }else{
+    name <- NULL
+  }
+  if (substr(lines[i], 1, 9) == "#Header: ") {
+    header <- strsplit(gsub("#Header: ", "", lines[i]), split = ",")
+    i <- i + 1
+  } else {
+    header <- NULL
+  }
+  # Process the permutations
+  lines <- lines[-(1:i)]
+  aux <- lapply(lines, 
+                FUN=function(row) {
+                  vector <- as.numeric(unlist(strsplit(row, ",")))
+                  if (any(sort(vector) != 1:permutation.size)) {
+                    stop("Todas las filas de datos deben ser perutaciones 
+                         de tamaño " , permutation.size)
+                  }
+                  return(vector)
+                })
+  perms <- do.call(rbind, aux)
+  if (!is.null(header)) {
+    if (length(header)!=permutation.size) {
+      warning("La cabecera del fichero no es correcta. 
+              Debe tener tamaño ", pemrmutation.size)
+    } else {
+      colnames(perms) <- header
+    }
+  }
+  if (!is.null(name)) {
+    object <- list(Name=name, permutations=perms)
+  } else {
+    object <- perms
+  }
+  return(object)
+}
+
+
+## -------------------------------------------------------------------------------------------------------------------------
+permutaciones.leidas <- readPermutationFile(file.path=path.fichero)
+permutaciones
+permutaciones.leidas
+
+## -------------------------------------------------------------------------------------------------------------------------
+
+#R5.1
+IrakurriCSV<- function(dat, max_cat=5){
+  dat<-read.csv(dat, stringsAsFactors = FALSE)
+  dat<-as.data.frame(lapply(dat, FUN = function(a){
+    b <- suppressWarnings(as.numeric(as.character(a)))
+    #numeric+ osoa bada integer
+    if (!all(is.na(b)) && all(b %% 1 == 0, na.rm = TRUE)) {
+      return(as.integer(b))
+    }
+    # numeric izan al badu dezimalekin→ numeric
+    else if (!all(is.na(b))) {
+      return(as.numeric(b))
+    }
+    # balore bakar gutxi bazka → factor
+    else if (length(unique(a)) < max_cat) {
+      return(as.factor(a))
+    }
+    # ezin eze aplikau → originala mantendu
+    else {
+      return(a)
+    }
+  }))
+  
+  return(dat)
+}
+
+
+
+#R5.1
+
+#  Log fitxategia sortu (edo ireki)
+crearLog <- function(ruta_log) {
+  # Fitxategia "append" moduan ireki → existitzen bada, bukaeran idazten jarraitzen du
+  con <- file(ruta_log, open = "a")
+  
+  # Hasierako mezua denbora-markarekin idatzi
+  cat("=== Log berri bat hasi da:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "===\n", 
+      file = con)
+  
+  return(con)  # konexioa itzuli, beste funtzioetan erabiltzeko
+}
+
+# Mezua log-ean idatzi
+escribirLog <- function(con, mensaje) {
+  timestamp <- format(Sys.time(), "%Y-%m-%d %H:%M:%S")  # Uneko data eta ordua
+  cat(sprintf("[%s] %s\n", timestamp, mensaje), file = con)
+}
+
+# Log-a itxi
+cerrarLog <- function(con) {
+  cat("=== Log-aren amaiera:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "===\n\n", 
+      file = con)
+  close(con)
+}

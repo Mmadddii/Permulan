@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Maddi" />
+
+
+<title>Permulan paketea</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Permulan paketea</h1>
+<h4 class="author">Maddi</h4>
+
+
+
+<div id="hasierako-urratsak" class="section level2">
+<h2>Hasierako urratsak</h2>
+<p>Paketea kargatzeko:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(Permulan)</span></code></pre></div>
+</div>
+<div id="laguntza-kontsultatzea" class="section level2">
+<h2>Laguntza kontsultatzea</h2>
+<p>Pakete honetako funtzio guztien laguntzara <strong>iritxi</strong>
+daiteke <code>?funtzioa</code> exekutatuz.</p>
+</div>
+<div id="sarrera" class="section level2">
+<h2>Sarrera</h2>
+<p><strong>Permulan</strong> paketeak datuen aurreprozesamendurako eta
+azterketa estatistikorako tresna multzoa eskaintzen du.S4 klaseen bidez
+egituratuta dago</p>
+</div>
+<div id="klase-nagusiak" class="section level2">
+<h2>Klase nagusiak</h2>
+<p>Paketeak bi klase nagusi ditu:</p>
+<ul>
+<li><code>Atributua</code>: aldagai bakar baten informazioa gordetzen du
+(izena, mota, balioak).</li>
+<li><code>DatuMultzoa</code>: atributu multzo bat eta aukerazko
+klase-aldagai bat gordetzeko.</li>
+<li>Horrez gain data.frame formatua ere onartzen dute funtzio
+guztietan</li>
+</ul>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fu">Atributua</span>(<span class="st">&quot;adina&quot;</span>, <span class="fu">c</span>(<span class="dv">21</span>, <span class="dv">35</span>, <span class="dv">50</span>))</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>a</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="co">#&gt; An object of class &quot;Atributua&quot;</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co">#&gt; Slot &quot;izena&quot;:</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co">#&gt; [1] &quot;adina&quot;</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co">#&gt; Slot &quot;mota&quot;:</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="co">#&gt; [1] &quot;numeric&quot;</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="co">#&gt; Slot &quot;balioak&quot;:</span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="co">#&gt; [1] 21 35 50</span></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>datuak <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">adina =</span> <span class="fu">c</span>(<span class="dv">21</span>, <span class="dv">35</span>, <span class="dv">50</span>), <span class="at">sexua =</span> <span class="fu">c</span>(<span class="st">&quot;M&quot;</span>, <span class="st">&quot;F&quot;</span>, <span class="st">&quot;M&quot;</span>))</span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>dm <span class="ot">&lt;-</span> <span class="fu">DatuMultzoa</span>(datuak, <span class="at">klase_izena =</span> <span class="st">&quot;sexua&quot;</span>)</span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>dm</span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="co">#&gt; DatuMultzoa objektua:</span></span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a><span class="co">#&gt;   Atributuak:</span></span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a><span class="co">#&gt;    - adina ( numeric )</span></span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a><span class="co">#&gt;   Klasea: sexua ( categoric )</span></span></code></pre></div>
+</div>
+<div id="normalizazioa-eta-estandarizazioa" class="section level2">
+<h2>Normalizazioa eta Estandarizazioa</h2>
+<p><strong><code>normalize()</code></strong> eta
+<strong><code>standardize()</code></strong> funtzioek atributu
+zenbakizkoak eraldatzen dituzte:</p>
+<ul>
+<li><p><code>normalize()</code>:<br />
+Atributuak <strong>[0, 1]</strong> tartean eskalatzen ditu, hau
+da:<br />
+<span class="math display">\[
+x&#39; = \frac{x - \min(x)}{\max(x) - \min(x)}
+\]</span></p></li>
+<li><p><code>standardize()</code>:<br />
+Atributuak batezbesteko <strong>0</strong> eta desbideratze estandar
+<strong>1</strong> duen eskalara eramaten ditu:<br />
+<span class="math display">\[
+z = \frac{x - \bar{x}}{s_x}
+\]</span></p></li>
+</ul>
+<p>Funtzio hauek S4 motako <strong><code>Atributua</code></strong>, eta
+<strong><code>DatuMultzoa</code></strong> klaseetarako funtzionatzen
+dut, baita <strong><code>data.frame</code></strong> datu-taulentzat eta
+<strong><code>numeric</code></strong> motako bektoreentzat ere.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co">#data.frame motako objektuentzat:</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="at">adina =</span> <span class="fu">c</span>(<span class="dv">20</span>, <span class="dv">25</span>, <span class="dv">30</span>, <span class="dv">35</span>, <span class="dv">40</span>, <span class="dv">45</span>, <span class="dv">50</span>, <span class="dv">55</span>, <span class="dv">60</span>, <span class="dv">65</span>),</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="at">soldata =</span> <span class="fu">c</span>(<span class="dv">1200</span>, <span class="dv">1500</span>, <span class="dv">1600</span>, <span class="dv">2000</span>, <span class="dv">2300</span>, <span class="dv">2600</span>, <span class="dv">2800</span>, <span class="dv">3100</span>, <span class="dv">3500</span>, <span class="dv">3900</span>),  </span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="at">altuera =</span> <span class="fu">c</span>(<span class="fl">1.55</span>, <span class="fl">1.62</span>, <span class="fl">1.68</span>, <span class="fl">1.70</span>, <span class="fl">1.75</span>, <span class="fl">1.78</span>, <span class="fl">1.79</span>, <span class="fl">1.80</span>, <span class="fl">1.82</span>, <span class="fl">1.83</span>),  </span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>  <span class="at">pisua =</span> <span class="fu">c</span>(<span class="dv">70</span>, <span class="dv">68</span>, <span class="dv">72</span>, <span class="dv">74</span>, <span class="dv">78</span>, <span class="dv">79</span>, <span class="dv">85</span>, <span class="dv">88</span>, <span class="dv">90</span>, <span class="dv">92</span>),                        </span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>  <span class="at">zoriontasuna =</span> <span class="fu">c</span>(<span class="dv">8</span>, <span class="dv">7</span>, <span class="dv">6</span>, <span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">2</span>))</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="fu">normalize</span>(df)</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&gt;        adina   soldata   altuera      pisua zoriontasuna</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt; 1  0.0000000 0.0000000 0.0000000 0.08333333    1.0000000</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt; 2  0.1111111 0.1111111 0.2500000 0.00000000    0.8333333</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co">#&gt; 3  0.2222222 0.1481481 0.4642857 0.16666667    0.6666667</span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co">#&gt; 4  0.3333333 0.2962963 0.5357143 0.25000000    0.5000000</span></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="co">#&gt; 5  0.4444444 0.4074074 0.7142857 0.41666667    0.5000000</span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="co">#&gt; 6  0.5555556 0.5185185 0.8214286 0.45833333    0.3333333</span></span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a><span class="co">#&gt; 7  0.6666667 0.5925926 0.8571429 0.70833333    0.1666667</span></span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a><span class="co">#&gt; 8  0.7777778 0.7037037 0.8928571 0.83333333    0.1666667</span></span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a><span class="co">#&gt; 9  0.8888889 0.8518519 0.9642857 0.91666667    0.0000000</span></span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a><span class="co">#&gt; 10 1.0000000 1.0000000 1.0000000 1.00000000    0.0000000</span></span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a><span class="fu">standardize</span>(df)</span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a><span class="co">#&gt;         adina    soldata    altuera       pisua zoriontasuna</span></span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a><span class="co">#&gt; 1  -1.4863011 -1.3990005 -1.9630638 -1.10410489    1.6922282</span></span>
+<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a><span class="co">#&gt; 2  -1.1560120 -1.0632404 -1.2080393 -1.33412675    1.2087344</span></span>
+<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a><span class="co">#&gt; 3  -0.8257228 -0.9513204 -0.5608754 -0.87408304    0.7252407</span></span>
+<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a><span class="co">#&gt; 4  -0.4954337 -0.5036402 -0.3451541 -0.64406119    0.2417469</span></span>
+<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a><span class="co">#&gt; 5  -0.1651446 -0.1678801  0.1941492 -0.18401748    0.2417469</span></span>
+<span id="cb3-28"><a href="#cb3-28" tabindex="-1"></a><span class="co">#&gt; 6   0.1651446  0.1678801  0.5177311 -0.06900656   -0.2417469</span></span>
+<span id="cb3-29"><a href="#cb3-29" tabindex="-1"></a><span class="co">#&gt; 7   0.4954337  0.3917202  0.6255918  0.62105900   -0.7252407</span></span>
+<span id="cb3-30"><a href="#cb3-30" tabindex="-1"></a><span class="co">#&gt; 8   0.8257228  0.7274803  0.7334524  0.96609178   -0.7252407</span></span>
+<span id="cb3-31"><a href="#cb3-31" tabindex="-1"></a><span class="co">#&gt; 9   1.1560120  1.1751605  0.9491737  1.19611364   -1.2087344</span></span>
+<span id="cb3-32"><a href="#cb3-32" tabindex="-1"></a><span class="co">#&gt; 10  1.4863011  1.6228406  1.0570343  1.42613549   -1.2087344</span></span></code></pre></div>
+</div>
+<div id="diskretizazio-funtzioak" class="section level2">
+<h2>Diskretizazio funtzioak</h2>
+<p>Pakete honek hiru diskretizazio metodo eskaintzen ditu:</p>
+<ul>
+<li><strong>discretizeEW</strong>: <em>Equal Width</em> balioak tarte
+berdinetan banatzen ditu.<br />
+</li>
+<li><strong>discretizeEF</strong>: <em>Equal Frequency</em> balioak
+maiztasun berdineko tarteetan banatzen ditu.</li>
+<li><strong>discretize</strong>: ebaki-puntuak eskuz zehaztuz egiten du
+banaketa</li>
+</ul>
+<div id="equal-width-adibidea" class="section level3">
+<h3>Equal Width adibidea</h3>
+<p>Irteera moduan diskretizatutako balioak eta ebaki puntuak ematen
+ditu</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">11.5</span>, <span class="fl">10.2</span>, <span class="fl">1.2</span>, <span class="fl">0.5</span>, <span class="fl">5.3</span>, <span class="fl">20.5</span>, <span class="fl">8.4</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">discretizeEW</span>(x, <span class="dv">5</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co">#&gt; $x.discretized</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt; [1] I3 I3 I1 I1 I2 I5 I2</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt; Levels: I1 I2 I3 I4 I5</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt; $cut.points</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co">#&gt; [1]  4.5  8.5 12.5 16.5</span></span></code></pre></div>
+<p>Atributu objektu batekin:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fu">Atributua</span>(<span class="st">&quot;adina&quot;</span>, x)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="fu">discretizeEW</span>(a, <span class="dv">5</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#&gt; $atributua</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co">#&gt; An object of class &quot;Atributua&quot;</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co">#&gt; Slot &quot;izena&quot;:</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt; [1] &quot;adina&quot;</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#&gt; Slot &quot;mota&quot;:</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co">#&gt; [1] &quot;categoric&quot;</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="co">#&gt; Slot &quot;balioak&quot;:</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="co">#&gt; [1] I3 I3 I1 I1 I2 I5 I2</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="co">#&gt; Levels: I1 I2 I3 I4 I5</span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a><span class="co">#&gt; $cut.points</span></span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a><span class="co">#&gt; [1]  4.5  8.5 12.5 16.5</span></span></code></pre></div>
+</div>
+<div id="equal-frequency-adibidea" class="section level3">
+<h3>Equal Frequency adibidea</h3>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">discretizeEF</span>(x, <span class="dv">3</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="co">#&gt; $x.discretized</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co">#&gt; [1] I3 I2 I1 I1 I1 I3 I2</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">#&gt; Levels: I1 I2 I3</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co">#&gt; $cut.points</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co">#&gt; [1]  0.5  5.3 10.2 20.5</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="fu">discretizeEF</span>(a, <span class="dv">3</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="co">#&gt; $x.discretized</span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co">#&gt; An object of class &quot;Atributua&quot;</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="co">#&gt; Slot &quot;izena&quot;:</span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="co">#&gt; [1] &quot;adina&quot;</span></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="co">#&gt; Slot &quot;mota&quot;:</span></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="co">#&gt; [1] &quot;categoric&quot;</span></span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a><span class="co">#&gt; Slot &quot;balioak&quot;:</span></span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a><span class="co">#&gt; [1] I3 I2 I1 I1 I1 I3 I2</span></span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a><span class="co">#&gt; Levels: I1 I2 I3</span></span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a><span class="co">#&gt; $cut.points</span></span>
+<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a><span class="co">#&gt; [1]  0.5  5.3 10.2 20.5</span></span></code></pre></div>
+</div>
+<div id="diskretizazioa-eskuz-emandako-ebaki-puntuekin" class="section level3">
+<h3>Diskretizazioa eskuz emandako ebaki-puntuekin</h3>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>cut.points <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">5.5</span>, <span class="fl">10.5</span>, <span class="fl">15.5</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="fu">discretize</span>(x, cut.points)</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co">#&gt; $x.discretized</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">#&gt; [1] I3 I2 I1 I1 I1 I4 I2</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co">#&gt; Levels: I1 I2 I3 I4</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="co">#&gt; $cut.points</span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="co">#&gt; [1]  5.5 10.5 15.5</span></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="co">#DatuMultzoa objektuarekin:</span></span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>dm_disk <span class="ot">&lt;-</span> <span class="fu">discretize</span>(dm, cut.points)</span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>dm_disk</span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a><span class="co">#&gt; DatuMultzoa objektua:</span></span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a><span class="co">#&gt;   Atributuak:</span></span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a><span class="co">#&gt;    - adina ( categoric )</span></span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a><span class="co">#&gt;   Klasea: sexua ( categoric )</span></span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a><span class="fu">lapply</span>(dm_disk<span class="sc">@</span>atributuak, <span class="cf">function</span>(a) <span class="fu">list</span>(<span class="at">izena =</span> a<span class="sc">@</span>izena, <span class="at">mota =</span> a<span class="sc">@</span>mota, <span class="at">balioak =</span> <span class="fu">head</span>(a<span class="sc">@</span>balioak)))</span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a><span class="co">#&gt; $adina</span></span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a><span class="co">#&gt; $adina$izena</span></span>
+<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a><span class="co">#&gt; [1] &quot;adina&quot;</span></span>
+<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a><span class="co">#&gt; $adina$mota</span></span>
+<span id="cb7-23"><a href="#cb7-23" tabindex="-1"></a><span class="co">#&gt; [1] &quot;categoric&quot;</span></span>
+<span id="cb7-24"><a href="#cb7-24" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-25"><a href="#cb7-25" tabindex="-1"></a><span class="co">#&gt; $adina$balioak</span></span>
+<span id="cb7-26"><a href="#cb7-26" tabindex="-1"></a><span class="co">#&gt; [1] I4 I4 I4</span></span>
+<span id="cb7-27"><a href="#cb7-27" tabindex="-1"></a><span class="co">#&gt; Levels: I1 I2 I3 I4</span></span></code></pre></div>
+</div>
+</div>
+<div id="korrelazioa-eta-informazio-mutuala" class="section level2">
+<h2>Korrelazioa eta Informazio Mutuala</h2>
+<p><strong><code>korrelazio_matrizea()</code></strong> funtzioak datu
+multzo bateko aldagai guztien arteko<br />
+<strong>erlazio estatistikoa</strong> kalkulatzen du.</p>
+<p>Funtzioak automatikoki hautatzen du erlazio mota aldagai motaren
+arabera:</p>
+<ul>
+<li><strong>Pearson korrelazioa</strong>: bi aldagaiak zenbakizkoak
+direnean.<br />
+</li>
+<li><strong>Informazio mutua</strong>: biak kategorikoak direnean.<br />
+</li>
+<li>Beste kasuetan (<code>numeric</code> vs <code>factor</code>),
+emaitza <code>NA</code> izango da.</li>
+</ul>
+<p>Interpretazioa:</p>
+<ul>
+<li><strong>Balio positiboak</strong> → bi aldagaiak batera handitzen
+dira.<br />
+</li>
+<li><strong>Balio negatiboak</strong> → bat handitzen denean bestea
+txikitzen da.<br />
+</li>
+<li><strong>0 inguruko balioak</strong> → ez dago erlazio linealik.</li>
+</ul>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="at">adina =</span> <span class="fu">c</span>(<span class="dv">20</span>, <span class="dv">25</span>, <span class="dv">30</span>, <span class="dv">35</span>, <span class="dv">40</span>, <span class="dv">45</span>, <span class="dv">50</span>, <span class="dv">55</span>, <span class="dv">60</span>, <span class="dv">65</span>),</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="at">soldata =</span> <span class="fu">c</span>(<span class="dv">1200</span>, <span class="dv">1500</span>, <span class="dv">1600</span>, <span class="dv">2000</span>, <span class="dv">2300</span>, <span class="dv">2600</span>, <span class="dv">2800</span>, <span class="dv">3100</span>, <span class="dv">3500</span>, <span class="dv">3900</span>),  </span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="at">altuera =</span> <span class="fu">c</span>(<span class="fl">1.55</span>, <span class="fl">1.62</span>, <span class="fl">1.68</span>, <span class="fl">1.70</span>, <span class="fl">1.75</span>, <span class="fl">1.78</span>, <span class="fl">1.79</span>, <span class="fl">1.80</span>, <span class="fl">1.82</span>, <span class="fl">1.83</span>),  </span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  <span class="at">pisua =</span> <span class="fu">c</span>(<span class="dv">70</span>, <span class="dv">68</span>, <span class="dv">72</span>, <span class="dv">74</span>, <span class="dv">78</span>, <span class="dv">79</span>, <span class="dv">85</span>, <span class="dv">88</span>, <span class="dv">90</span>, <span class="dv">92</span>),                        </span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>  <span class="at">zoriontasuna =</span> <span class="fu">c</span>(<span class="dv">8</span>, <span class="dv">7</span>, <span class="dv">6</span>, <span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">2</span>))</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>kor <span class="ot">&lt;-</span> <span class="fu">korrelazio_matrizea</span>(df)</span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="fu">print</span>(kor)</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a><span class="co">#&gt;                   adina    soldata    altuera      pisua zoriontasuna</span></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a><span class="co">#&gt; adina         1.0000000  0.9960276  0.9539637  0.9834376   -0.9847719</span></span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a><span class="co">#&gt; soldata       0.9960276  1.0000000  0.9335501  0.9782741   -0.9710213</span></span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a><span class="co">#&gt; altuera       0.9539637  0.9335501  1.0000000  0.9066789   -0.9734658</span></span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a><span class="co">#&gt; pisua         0.9834376  0.9782741  0.9066789  1.0000000   -0.9576773</span></span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a><span class="co">#&gt; zoriontasuna -0.9847719 -0.9710213 -0.9734658 -0.9576773    1.0000000</span></span></code></pre></div>
+<p><strong><code>Korrelazioak_irudikatu()</code></strong> funtzioak
+korrelazio-matrizearen heatmap bat sortzen du kolore-eskala baten
+bidez.</p>
+<ul>
+<li><p>Kolore gorriak: korrelazio positibo handia.</p></li>
+<li><p>Kolore urdinak: korrelazio negatiboa.</p></li>
+<li><p>Kolore txuriak: korrelazio txikia edo eza.</p></li>
+</ul>
+<p>Adi! Funtzio honetan ez da Korrelazio_matrizearen outputa sartu
+behar, zuzenean datu gordinak baizik.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">Korrelazioak_irudikatu</span>(df)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+</div>
+<div id="bariantza-eta-entropia-kalkulua" class="section level2">
+<h2>Bariantza eta Entropia kalkulua</h2>
+<p><strong><code>entropy()</code></strong> funtzioak <strong>aldagai
+diskretu baten</strong> (faktore edo atributu kategoriko baten)<br />
+<strong>entropia</strong> kalkulatzen du, hau da, bere informazio edo
+<strong>ziurgabetasun maila</strong>.</p>
+<p><strong><code>entropy_by_column()</code></strong> funtzioak, berriz,
+dataset edo <strong><code>DatuMultzoa</code></strong> batean
+dauden<br />
+atributu guztien entropia kalkulatzen du <strong>zutabeka</strong>.</p>
+<p>Funtzio hauek S4 metodoak dituzte:<br />
+<code>factor</code>, <code>Atributua</code>, <code>data.frame</code> eta
+<code>DatuMultzoa</code> klaseetarako.</p>
+<p>Entropiak atributu baten balioek duten <strong>informazio
+kopurua</strong> neurtzen du.<br />
+Formula hau erabiltzen da:</p>
+<p><span class="math display">\[
+H(X) = -\sum p(x) \log_2 p(x)
+\]</span></p>
+<p>non <span class="math inline">\(p(x)\)</span> atributuko balio
+bakoitzaren <strong>probabilitatea</strong> den.</p>
+<ul>
+<li><strong>Entropia maximoa</strong> lortzen da balio guztiak
+<strong>maiztasun berdinarekin</strong> agertzen direnean.<br />
+</li>
+<li><strong>Entropia minimoa (0)</strong> gertatzen da <strong>balio
+bakarra</strong> dagoenean.</li>
+</ul>
+<p>Entropia, beraz, <strong>aldagaiaren ziurgabetasun neurria</strong>
+da:<br />
+zenbat eta handiagoa izan, orduan eta informazio gehiago du
+aldagaiarekiko.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="st">&quot;C&quot;</span>))</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="fu">entropy</span>(f)</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="co">#&gt; [1] 1.521928</span></span></code></pre></div>
+<p>Atributu kategoriko batekin:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">Atributua</span>(<span class="st">&quot;sexua&quot;</span>, <span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">&quot;M&quot;</span>, <span class="st">&quot;F&quot;</span>, <span class="st">&quot;M&quot;</span>, <span class="st">&quot;F&quot;</span>, <span class="st">&quot;F&quot;</span>)))</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="fu">entropy</span>(b)</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="co">#&gt; [1] 0.9709506</span></span></code></pre></div>
+<p><strong><code>var_col()</code></strong> funtzioak atributu
+zenbakizkoen bariantza kalkulatzen du.<br />
+Funtzio honek <code>numeric</code>, <code>data.frame</code>,
+<code>Atributua</code> eta <code>DatuMultzoa</code> klaseetako objektuak
+onartzen ditu.</p>
+<p>Bariantzak datuen <strong>banaketaren sakabanaketa</strong> neurtzen
+du.<br />
+Formula hau erabiltzen da:</p>
+<p><span class="math display">\[
+Var(X) = \frac{1}{n - 1} \sum_{i = 1}^{n} (x_i - \bar{x})^2
+\]</span></p>
+<p>non <span class="math inline">\(\bar{x}\)</span> datu guztien
+<em>batezbestekoa</em> den.</p>
+<p>Bariantza handiak adierazten du datuak <strong>asko aldatzen
+direla</strong>;<br />
+bariantza txikiek, aldiz, <strong>balioak oso antzekoak</strong>
+direla.</p>
+<p>Oharra: Atributua edo DatuMultzoa klaseko objektuetan, <span class="citation">@mota</span> == “numeric” dutenak bakarrik erabiltzen
+dira.Emaitzak bektore edo izenatutako lista moduan itzultzen dira,
+atributu bakoitzaren bariantzarekin.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>  <span class="at">adina =</span> <span class="fu">c</span>(<span class="dv">20</span>, <span class="dv">25</span>, <span class="dv">30</span>, <span class="dv">35</span>, <span class="dv">40</span>, <span class="dv">45</span>, <span class="dv">50</span>, <span class="dv">55</span>, <span class="dv">60</span>, <span class="dv">65</span>),</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  <span class="at">soldata =</span> <span class="fu">c</span>(<span class="dv">1200</span>, <span class="dv">1500</span>, <span class="dv">1600</span>, <span class="dv">2000</span>, <span class="dv">2300</span>, <span class="dv">2600</span>, <span class="dv">2800</span>, <span class="dv">3100</span>, <span class="dv">3500</span>, <span class="dv">3900</span>),  </span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>  <span class="at">altuera =</span> <span class="fu">c</span>(<span class="fl">1.55</span>, <span class="fl">1.62</span>, <span class="fl">1.68</span>, <span class="fl">1.70</span>, <span class="fl">1.75</span>, <span class="fl">1.78</span>, <span class="fl">1.79</span>, <span class="fl">1.80</span>, <span class="fl">1.82</span>, <span class="fl">1.83</span>),  </span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>  <span class="at">pisua =</span> <span class="fu">c</span>(<span class="dv">70</span>, <span class="dv">68</span>, <span class="dv">72</span>, <span class="dv">74</span>, <span class="dv">78</span>, <span class="dv">79</span>, <span class="dv">85</span>, <span class="dv">88</span>, <span class="dv">90</span>, <span class="dv">92</span>),                        </span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>  <span class="at">zoriontasuna =</span> <span class="fu">c</span>(<span class="dv">8</span>, <span class="dv">7</span>, <span class="dv">6</span>, <span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">2</span>))</span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>bariantza<span class="ot">&lt;-</span><span class="fu">var_col</span>(df)</span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a><span class="fu">print</span>(bariantza)</span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a><span class="co">#&gt;        adina      soldata      altuera        pisua zoriontasuna </span></span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a><span class="co">#&gt; 2.291667e+02 7.983333e+05 8.595556e-03 7.560000e+01 4.277778e+00</span></span></code></pre></div>
+</div>
+<div id="auc-eta-roc-analisia" class="section level2">
+<h2>AUC eta ROC analisia</h2>
+<p><strong><code>roc_analisi()</code></strong> funtzioak atributu
+jarraitu baten eta klase binario baten arteko<br />
+bereizgarritasuna ebaluatzen du, <strong>ROC kurba</strong> eta
+<strong>AUC</strong> (Area Under the Curve) kalkulatuz.<br />
+<strong>Visualizar_ROC()</strong> funtzioak emaitzak irudikatzen ditu
+ditu.</p>
+<ul>
+<li><strong>AUC = 1</strong> → Sailkapen perfektua.<br />
+</li>
+<li><strong>AUC = 0.5</strong> → Ausazko sailkapena (informaziorik
+ez).<br />
+</li>
+<li><strong>AUC &lt; 0.5</strong> → Alderantzizko sailkapena.</li>
+</ul>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>df_test <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>  <span class="at">balioa =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.4</span>, <span class="fl">0.35</span>, <span class="fl">0.8</span>, <span class="fl">0.9</span>, <span class="fl">0.2</span>, <span class="fl">0.6</span>, <span class="fl">0.5</span>, <span class="fl">0.7</span>, <span class="fl">0.3</span>),</span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>  <span class="at">etiketa =</span> <span class="fu">c</span>(<span class="cn">FALSE</span>, <span class="cn">FALSE</span>, <span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>, <span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>)</span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>emaitza <span class="ot">&lt;-</span> <span class="fu">roc_analisi</span>(df_test)</span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a>emaitza</span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a><span class="co">#&gt; $curva</span></span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a><span class="co">#&gt;      cutoff  FPR       TPR</span></span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a><span class="co">#&gt; 0.1    0.10 1.00 1.0000000</span></span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a><span class="co">#&gt; 0.2    0.20 0.75 1.0000000</span></span>
+<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a><span class="co">#&gt; 0.3    0.30 0.50 1.0000000</span></span>
+<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a><span class="co">#&gt; 0.35   0.35 0.25 1.0000000</span></span>
+<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a><span class="co">#&gt; 0.4    0.40 0.25 0.8333333</span></span>
+<span id="cb13-16"><a href="#cb13-16" tabindex="-1"></a><span class="co">#&gt; 0.5    0.50 0.00 0.8333333</span></span>
+<span id="cb13-17"><a href="#cb13-17" tabindex="-1"></a><span class="co">#&gt; 0.6    0.60 0.00 0.6666667</span></span>
+<span id="cb13-18"><a href="#cb13-18" tabindex="-1"></a><span class="co">#&gt; 0.7    0.70 0.00 0.5000000</span></span>
+<span id="cb13-19"><a href="#cb13-19" tabindex="-1"></a><span class="co">#&gt; 0.8    0.80 0.00 0.3333333</span></span>
+<span id="cb13-20"><a href="#cb13-20" tabindex="-1"></a><span class="co">#&gt; 0.9    0.90 0.00 0.1666667</span></span>
+<span id="cb13-21"><a href="#cb13-21" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb13-22"><a href="#cb13-22" tabindex="-1"></a><span class="co">#&gt; $AUC</span></span>
+<span id="cb13-23"><a href="#cb13-23" tabindex="-1"></a><span class="co">#&gt; [1] 0.9583333</span></span></code></pre></div>
+<p><strong>Irudikapena:</strong> - Kurba urdinak sistemaren
+errendimendua erakusten du.</p>
+<ul>
+<li><p>Diagonalean dagoen marra gorria ausazko sailkapena da (AUC =
+0.5).</p></li>
+<li><p>Kurba zenbat eta gorago egon, orduan eta hobea da
+sailkapena.</p></li>
+</ul>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="fu">Visualizar_ROC</span>(emaitza)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+</div>
+<div id="atributuen-flitraketa" class="section level2">
+<h2>Atributuen flitraketa</h2>
+<p><strong><code>filter_metrics()</code></strong> funtzioak dataset
+baten atributuak <strong>automatikoki iragazten</strong> ditu aurrez
+kalkulatutako metrikak kontuan hartuta.<br />
+Funtzio honek <code>data.frame</code> eta <code>DatuMultzoa</code>
+klaseetarako metodoak ditu. Helburua <strong>informazio gutxiko
+atributuak ezabatzea</strong> da, analisia optimizatzeko.</p>
+<table>
+<colgroup>
+<col width="25%" />
+<col width="38%" />
+<col width="35%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Metrika</th>
+<th>Deskribapena</th>
+<th>Aplikagarria</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Bariantza minimoa</strong></td>
+<td>Atributu numerikoentzat; bariantza baxua duten ezaugarriak
+baztertzen ditu.</td>
+<td>Zenbakizko atributuak</td>
+</tr>
+<tr class="even">
+<td><strong>Entropia minimoa</strong></td>
+<td>Atributu kategorikoentzat; informazio gutxiko kategoriak ezabatzen
+ditu.</td>
+<td>Atrbutu kategorikoak</td>
+</tr>
+</tbody>
+</table>
+<div id="parametroak" class="section level3">
+<h3>Parametroak</h3>
+<ul>
+<li><code>x</code>: Dataset-a (<code>data.frame</code> edo
+<code>DatuMultzoa</code>)</li>
+<li><code>var_min</code>: Bariantza minimoa (lehenetsia
+<code>0</code>)</li>
+<li><code>entropy_min</code>: Entropia minimoa (lehenetsia
+<code>0</code>)</li>
+<li><code>auc_min</code>: AUC minimoa (lehenetsia <code>0</code>)</li>
+<li><code>klase</code>: AUC kalkulatzeko etiketa binarioa
+(<code>data.frame</code>-ean bakarrik)</li>
+</ul>
+<p>Bariantza filtratuz:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>df1 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>  <span class="at">konstantea =</span> <span class="fu">rep</span>(<span class="dv">5</span>, <span class="dv">10</span>),         </span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>  <span class="at">aldakorra =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>,                </span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>  <span class="at">txikia =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">2</span>)  </span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>)</span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a><span class="fu">var_col</span>(df1)</span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a><span class="co">#&gt; konstantea  aldakorra     txikia </span></span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a><span class="co">#&gt;  0.0000000  9.1666667  0.2777778</span></span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a><span class="co"># Bariantza &gt;= 1 bakarrik duten aldagaiak gorde</span></span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a><span class="fu">filter_metrics</span>(df1, <span class="at">var_min =</span> <span class="dv">1</span>)</span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a><span class="co">#&gt;    aldakorra</span></span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a><span class="co">#&gt; 1          1</span></span>
+<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a><span class="co">#&gt; 2          2</span></span>
+<span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a><span class="co">#&gt; 3          3</span></span>
+<span id="cb15-15"><a href="#cb15-15" tabindex="-1"></a><span class="co">#&gt; 4          4</span></span>
+<span id="cb15-16"><a href="#cb15-16" tabindex="-1"></a><span class="co">#&gt; 5          5</span></span>
+<span id="cb15-17"><a href="#cb15-17" tabindex="-1"></a><span class="co">#&gt; 6          6</span></span>
+<span id="cb15-18"><a href="#cb15-18" tabindex="-1"></a><span class="co">#&gt; 7          7</span></span>
+<span id="cb15-19"><a href="#cb15-19" tabindex="-1"></a><span class="co">#&gt; 8          8</span></span>
+<span id="cb15-20"><a href="#cb15-20" tabindex="-1"></a><span class="co">#&gt; 9          9</span></span>
+<span id="cb15-21"><a href="#cb15-21" tabindex="-1"></a><span class="co">#&gt; 10        10</span></span></code></pre></div>
+<p>Entropia filtratuz:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>df_ent <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>  <span class="at">kol1 =</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;A&quot;</span>, <span class="st">&quot;A&quot;</span>, <span class="st">&quot;A&quot;</span>, <span class="st">&quot;A&quot;</span>)),   <span class="co"># Entropia = 0 (balio bakarra)</span></span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>  <span class="at">kol2 =</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="st">&quot;A&quot;</span>)),   <span class="co"># Entropia ertaina</span></span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>  <span class="at">kol3 =</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">&quot;X&quot;</span>, <span class="st">&quot;Y&quot;</span>, <span class="st">&quot;Z&quot;</span>, <span class="st">&quot;X&quot;</span>, <span class="st">&quot;Y&quot;</span>)))</span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a><span class="fu">entropy_by_column</span>(df_ent)</span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a><span class="co">#&gt;      kol1      kol2      kol3 </span></span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a><span class="co">#&gt; 0.0000000 0.9709506 1.5219281</span></span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a></span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a><span class="co"># Aplikatu filtraketa entropiaren arabera (adib. entropy_min = 0.8)</span></span>
+<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a>df_ent_filtratua <span class="ot">&lt;-</span> <span class="fu">filter_metrics</span>(df_ent, <span class="at">entropy_min =</span> <span class="fl">0.8</span>)</span>
+<span id="cb16-12"><a href="#cb16-12" tabindex="-1"></a>df_ent_filtratua</span>
+<span id="cb16-13"><a href="#cb16-13" tabindex="-1"></a><span class="co">#&gt;   kol2 kol3</span></span>
+<span id="cb16-14"><a href="#cb16-14" tabindex="-1"></a><span class="co">#&gt; 1    A    X</span></span>
+<span id="cb16-15"><a href="#cb16-15" tabindex="-1"></a><span class="co">#&gt; 2    B    Y</span></span>
+<span id="cb16-16"><a href="#cb16-16" tabindex="-1"></a><span class="co">#&gt; 3    A    Z</span></span>
+<span id="cb16-17"><a href="#cb16-17" tabindex="-1"></a><span class="co">#&gt; 4    B    X</span></span>
+<span id="cb16-18"><a href="#cb16-18" tabindex="-1"></a><span class="co">#&gt; 5    A    Y</span></span>
+<span id="cb16-19"><a href="#cb16-19" tabindex="-1"></a></span>
+<span id="cb16-20"><a href="#cb16-20" tabindex="-1"></a></span>
+<span id="cb16-21"><a href="#cb16-21" tabindex="-1"></a>df_auc <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb16-22"><a href="#cb16-22" tabindex="-1"></a><span class="at">aldagaia =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.4</span>, <span class="fl">0.35</span>, <span class="fl">0.8</span>, <span class="fl">0.9</span>, <span class="fl">0.2</span>, <span class="fl">0.6</span>, <span class="fl">0.5</span>, <span class="fl">0.7</span>, <span class="fl">0.3</span>),</span>
+<span id="cb16-23"><a href="#cb16-23" tabindex="-1"></a><span class="at">etiketa  =</span> <span class="fu">c</span>(<span class="cn">FALSE</span>, <span class="cn">FALSE</span>, <span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>, <span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>)</span>
+<span id="cb16-24"><a href="#cb16-24" tabindex="-1"></a>)</span>
+<span id="cb16-25"><a href="#cb16-25" tabindex="-1"></a></span>
+<span id="cb16-26"><a href="#cb16-26" tabindex="-1"></a><span class="co"># ROC kurba eta AUC kalkulatu</span></span>
+<span id="cb16-27"><a href="#cb16-27" tabindex="-1"></a></span>
+<span id="cb16-28"><a href="#cb16-28" tabindex="-1"></a>roc_ema <span class="ot">&lt;-</span> <span class="fu">roc_analisi</span>(df_auc)</span>
+<span id="cb16-29"><a href="#cb16-29" tabindex="-1"></a>roc_ema<span class="sc">$</span>AUC</span>
+<span id="cb16-30"><a href="#cb16-30" tabindex="-1"></a><span class="co">#&gt; [1] 0.9583333</span></span>
+<span id="cb16-31"><a href="#cb16-31" tabindex="-1"></a></span>
+<span id="cb16-32"><a href="#cb16-32" tabindex="-1"></a><span class="co"># Filtratu AUC minimoarekin</span></span>
+<span id="cb16-33"><a href="#cb16-33" tabindex="-1"></a></span>
+<span id="cb16-34"><a href="#cb16-34" tabindex="-1"></a>df_auc_filtratua <span class="ot">&lt;-</span> <span class="fu">filter_metrics</span>(df_auc, <span class="at">auc_min =</span> <span class="fl">0.6</span>, <span class="at">klase =</span> df_auc<span class="sc">$</span>etiketa)</span>
+<span id="cb16-35"><a href="#cb16-35" tabindex="-1"></a>df_auc_filtratua</span>
+<span id="cb16-36"><a href="#cb16-36" tabindex="-1"></a><span class="co">#&gt;    aldagaia</span></span>
+<span id="cb16-37"><a href="#cb16-37" tabindex="-1"></a><span class="co">#&gt; 1      0.10</span></span>
+<span id="cb16-38"><a href="#cb16-38" tabindex="-1"></a><span class="co">#&gt; 2      0.40</span></span>
+<span id="cb16-39"><a href="#cb16-39" tabindex="-1"></a><span class="co">#&gt; 3      0.35</span></span>
+<span id="cb16-40"><a href="#cb16-40" tabindex="-1"></a><span class="co">#&gt; 4      0.80</span></span>
+<span id="cb16-41"><a href="#cb16-41" tabindex="-1"></a><span class="co">#&gt; 5      0.90</span></span>
+<span id="cb16-42"><a href="#cb16-42" tabindex="-1"></a><span class="co">#&gt; 6      0.20</span></span>
+<span id="cb16-43"><a href="#cb16-43" tabindex="-1"></a><span class="co">#&gt; 7      0.60</span></span>
+<span id="cb16-44"><a href="#cb16-44" tabindex="-1"></a><span class="co">#&gt; 8      0.50</span></span>
+<span id="cb16-45"><a href="#cb16-45" tabindex="-1"></a><span class="co">#&gt; 9      0.70</span></span>
+<span id="cb16-46"><a href="#cb16-46" tabindex="-1"></a><span class="co">#&gt; 10     0.30</span></span></code></pre></div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
