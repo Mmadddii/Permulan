@@ -1,4 +1,4 @@
-# 📦 Permulan
+# Permulan
 
 **Permulan** R paketeak datuen azterketa estatistikorako oinarrizko funtzioak eskaintzen ditu:
 - Atributuen **bariantza**, **entropia** eta **AUC** kalkulua  
@@ -9,12 +9,8 @@
 
 ## Instalazioa
 
-Paketea zure sisteman instalatzeko, exekutatu:
-
 ```r
-# Devtools erabiliz (lokalki)
-devtools::install("ruta/al/directorio/Permulan")
-
-# Edo zuzenean GitHubetik
+# Zuzenean GitHubetik
 devtools::install_github("Mmadddii/Permulan")
 ```
+
